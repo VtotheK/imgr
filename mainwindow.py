@@ -26,32 +26,33 @@ class MainWindow(Frame):
         self.selectallbutton()
         self.sliders()
         self.imglist.bind("<<ListboxSelect>>", self.imgselection)
-        filebtn = Button(self,text="Select folder",command=self.selectfolder)
+        self.filebtn = Button(self,text="Select folder",command=self.selectfolder)
         quitButton = Button(master=self,text="Quit",command=self.quitprogram,height=1)
         quitButton.grid(row=3,column=2,sticky="ne")
-         
-        filebtn.grid(row=1,column=1,padx=self.bpad) 
+        self.filebtn.grid(row=0,column=0,padx=self.bpad,sticky="n") 
+    
     def noimglistbox(self):
         self.nonimglist = Listbox(master=self, height = self.ilheight, width=self.ilwidth)
         self.nonimglistscrollbar = Scrollbar(master=self, orient=VERTICAL)
         self.nonimglist.config(yscrollcommand=self.nonimglistscrollbar.set)
         self.nonimglistscrollbar.config(command=self.nonimglist.yview)
-        self.nonimglistscrollbar.grid(row=2,column=2,sticky="nse",pady=self.lbypad)
-        self.nonimglist.grid(row=2,column=2,padx = self.lbxpad ,pady=self.lbypad)
-        self.noimglabel = Label(master=self, text="Not image files").grid(row=2,column=2,sticky="n")
+        self.nonimglistscrollbar.grid(row=3,column=1,sticky="nse")
+        self.nonimglist.grid(row=3,column=1,padx = self.lbxpad)
+        self.noimglabel = Label(master=self, text="Not image files").grid(row=2,column=1,sticky="n")
     
     def sliders(self):
+        self.qualityscalelabel = Label(master=self, text="Quality").grid(row=1,column=0,sticky="n")
         self.imgqualityslider = Scale(master=self, from_=0, to_=10,orient=HORIZONTAL)
-        self.imgqualityslider.grid(row=1,column=1,sticky="n",pady=self.lbypad)
+        self.imgqualityslider.grid(row=1,column=0,sticky="n",pady=self.lbypad)
 
     def imglistbox(self):
         self.imglist = Listbox(master=self,height = self.ilheight, width=self.ilwidth,selectmode=EXTENDED)
         self.imglistscrollbar = Scrollbar(master=self, orient=VERTICAL)
         self.imglist.config(yscrollcommand=self.imglistscrollbar.set)
         self.imglistscrollbar.config(command=self.imglist.yview)
-        self.imglistscrollbar.grid(row=1,column=2,sticky="nse",pady=self.lbypad)
-        self.imglist.grid(row=1,column=2,pady=self.lbypad)
-        self.imglabel = Label(master=self, text="Images").grid(row=1,column=2,sticky="n") 
+        self.imglistscrollbar.grid(row=1,column=1,sticky="nse")
+        self.imglist.grid(row=1,column=1)
+        self.imglabel = Label(master=self, text="Images").grid(row=0,column=1,sticky="n") 
     
     def imgselection(self,event):
         self.imglistselections = event.widget.curselection()
@@ -74,7 +75,7 @@ class MainWindow(Frame):
         
     def selectallbutton(self):
         self.selectallbtn= Button(master=self, text="Select all",command=self.selectallimgs)
-        self.selectallbtn.grid(row=1,column=1,sticky="n")
+        self.selectallbtn.grid(row=1,column=0,sticky="n")
 
     def quitprogram(self):
         exit()
