@@ -12,30 +12,31 @@ class MainWindow(Frame):
         self.window_layout()
     
     def window_layout(self):
+        pad = 20
         self.master.title="Kurwa App"
         self.filepath = StringVar()
         self.pack(fill=BOTH,expand=1)
-        
-        self.nonimglist = Listbox(master=self, height = 20, width=30)
-        self.nonimglistscrollbar = Scrollbar(master=self, orient=VERTICAL)
-        self.nonimglist.config(yscrollcommand=self.nonimglistscrollbar.set)
-        self.nonimglistscrollbar.config(command=self.nonimglist.yview)
-        self.nonimglistscrollbar.grid(row=3,column=3,sticky="nse")
         
         self.imglist = Listbox(master=self,height = 10, width=30)
         self.imglistscrollbar = Scrollbar(master=self, orient=VERTICAL)
         self.imglist.config(yscrollcommand=self.imglistscrollbar.set)
         self.imglistscrollbar.config(command=self.imglist.yview)
-        self.imglistscrollbar.grid(row=2,column=2,sticky="nse")
+        self.imglistscrollbar.grid(row=1,column=2,sticky="nse",pady=pad,padx=pad)
+        self.imglist.grid(row=1,column=2,pady=pad,padx=pad)
+        self.imglabel = Label(master=self, text="Img").grid(row=1,column=2,sticky="n") 
+        
+        self.nonimglist = Listbox(master=self, height = 10, width=30)
+        self.nonimglistscrollbar = Scrollbar(master=self, orient=VERTICAL)
+        self.nonimglist.config(yscrollcommand=self.nonimglistscrollbar.set)
+        self.nonimglistscrollbar.config(command=self.nonimglist.yview)
+        self.nonimglistscrollbar.grid(row=2,column=2,sticky="nse",pady=pad,padx=pad)
+        self.nonimglist.grid(row=2,column=2,pady=pad,padx=pad)
+        self.noimglabel = Label(master=self, text="Not image files").grid(row=2,column=2,sticky="n")
         
         filebtn = Button(self,text="Select folder",command=self.selectfolder)
-        quitButton = Button(master=self,text="Quit",command=self.quitprogram)
-        quitButton.grid(row=1, column=1)
-        
-        self.imglist.grid(row=2,column=2)
-        self.nonimglist.grid(row=3,column=3)
-        #btn_readfiles = Button(self,text="Read files",command=self.readfiles)
-        #btn_readfiles.grid(row=1,column=0)
+        quitButton = Button(master=self,text="Quit",command=self.quitprogram,height=1)
+        quitButton.grid(row=2,column=2,sticky="se")
+         
         filebtn.grid(row=1,column=1)
     
     def readfiles(self):
@@ -56,7 +57,7 @@ class MainWindow(Frame):
 
 if(__name__ == "__main__"):
     root = Tk()
-    root.geometry("640x480")
+    root.geometry("840x680")
 
-    imgrsz = MainWindow(root)
+    imgrsz = MainWindow(root1
     root.mainloop()

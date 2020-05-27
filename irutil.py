@@ -6,18 +6,19 @@ from PIL import Image, ExifTags
 def getfiles(path):
     filespath = []
     nonimagelist = []
+    imgfiles = []
     for root, dirs, files in os.walk(path,topdown=False):
         for name in files:
             try:
                 fname = os.path.join(root,name)
-                #try:
                 img = Image.open(fname)
                 if(img):
-                    fname = fname.replace(path,'')
-                    filespath.append(fname)
-                #except IOError:
-                    #filespath.append("IO Exception")
+                    imgformat   = img.format
+                    imgsize     = str(img.size[0]) + "x" +  str(img.size[1])
+                    fname       = fname.replace(path,'')
+                    filespath.append(imgformat + " " + imgsize + " "  + fname)
+                    imgfiles.append(img)
             except IOError:
                 fname = fname.replace(path,'')
-                nonimagelist.append("Not image file:" + fname)
-    return filespath,nonimagelist
+                nonimagelist.append(fname)
+    return filespath,nonimagelist,imgfiles
