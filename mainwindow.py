@@ -22,17 +22,19 @@ class MainWindow(Frame):
         self.optionframe = Frame(master=self,border=1,relief=GROOVE)
         self.optionframe.grid(row=0,column=0,rowspan=15, columnspan=15,sticky="ns")
         self.master.title="Kurwa App"
+        self.subfoldervar = IntVar() 
         self.filepath = StringVar()
         self.pack(fill=BOTH,expand=1)
         self.imglistbox()
         self.noimglistbox()
         self.selectallbutton()
         self.sliders()
+        self.ckbtn_subfolders()
         self.imglist.bind("<<ListboxSelect>>", self.imgselection)
         self.filebtn = Button(master=self.optionframe,text="Select folder",command=self.selectfolder)
         quitButton = Button(master=self,text="Quit",command=self.quitprogram,height=1)
         quitButton.grid(row=15,column=29,sticky="ne",pady=self.bpad)
-        self.filebtn.grid(row=0,column=0,padx=self.bpad,sticky="n") 
+        self.filebtn.grid(row=0,column=0,padx=self.bpad,sticky="n",pady=self.bpad) 
     
     def noimglistbox(self):
         self.nonimglist = Listbox(master=self.imgtextframe,height = self.ilheight, width=self.ilwidth)
@@ -42,11 +44,14 @@ class MainWindow(Frame):
         self.nonimglistscrollbar.grid(row=3,column=1,sticky="nse")
         self.nonimglist.grid(row=3,column=1,padx = self.lbxpad)
         self.noimglabel = Label(master=self.imgtextframe, text="Not image files").grid(row=2,column=1,sticky="n")
-    
+   
+    def ckbtn_subfolders(self):
+        ckbtn = Checkbutton(master=self.optionframe,text="Subfolders",variable=self.subfoldervar).grid(row=1,column=0)
+
     def sliders(self):
-        self.qualityscalelabel = Label(master=self.optionframe, text="Quality").grid(row=3,column=0,sticky="n")
+        self.qualityscalelabel = Label(master=self.optionframe, text="Quality").grid(row=3,column=0,sticky="n",pady=10)
         self.imgqualityslider = Scale(master=self.optionframe, from_=0, to_=10,orient=HORIZONTAL)
-        self.imgqualityslider.grid(row=4,column=0,sticky="n")
+        self.imgqualityslider.grid(row=3,column=0,sticky="n",pady=30)
 
     def imglistbox(self):
         self.imglist = Listbox(master=self.imgtextframe,height = self.ilheight, width=self.ilwidth,selectmode=EXTENDED)
@@ -64,9 +69,13 @@ class MainWindow(Frame):
         self.imglist.select_set(0,END)
 
     def readfiles(self):
-        imgfilenames,nonimgfiles,imgfiles = irutil.getfiles(self.filepath)
-        if(self.imglist.size() > 0):
+        if(self.subfoldervar.get() == 1):
+            imgfilenames,nonimgfiles,imgfiles = irutil.getfiles(self.filepath,subfolders=True)
+        else:
+            imgfilenames,nonimgfiles,imgfiles = irutil.getfiles(self.filepath,subfolders=False)
+        if(self.imglist.size() > 0 or self.nonimglist.size() > 0):
             self.imglist.delete(0,END)
+            self.nonimglist.delete(0,END)
         for i in range(len(imgfiles)):
             self.imglist.insert(END,imgfilenames[i])
         for j in range(len(nonimgfiles)):
@@ -84,9 +93,10 @@ class MainWindow(Frame):
         exit()
 
     def selectfolder(self):
-        self.filepath= filedialog.askdirectory(initialdir="/")
-        self.readfiles()
-    
+        self.filepath = filedialog.askdirectory(initialdir="/")
+        if(self.filepath):
+            self.readfiles()
+
     def startdisableoptions(self):
         self.selectallbtn.config(state="disabled")
         
