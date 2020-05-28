@@ -12,6 +12,7 @@ class MainWindow(Frame):
         self.window_layout()
     
     def window_layout(self):
+        self.cacheddir  = "/"
         self.lbxpad     = 10
         self.lbypad     = 20
         self.bpad       = 10
@@ -93,7 +94,8 @@ class MainWindow(Frame):
         exit()
 
     def selectfolder(self):
-        self.filepath = filedialog.askdirectory(initialdir="/")
+        self.filepath = filedialog.askdirectory(initialdir=self.cacheddir)
+        self.cacheddir = self.filepath
         if(self.filepath):
             self.readfiles()
 
