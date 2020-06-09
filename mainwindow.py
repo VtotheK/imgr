@@ -89,7 +89,7 @@ class MainWindow(Frame):
                 self.rbextensions[j].place(x=x_place,y=y_place)
          
     def cbfileextensions_preserve(self):
-        self.fileextensions = Checkbutton(master=self.extensionsframe, text="Original extensions",variable=self.cbfileextensions_preserve_val)
+        self.fileextensions = Checkbutton(master=self.extensionsframe, text="Original extensions",variable=self.cbfileextensions_preserve_val,command=self.file_extensionsuseroption)
         self.fileextensions.grid(row=7,column=0,sticky="e")
 
     def sliders(self):
@@ -144,7 +144,14 @@ class MainWindow(Frame):
 
     def startdisableoptions(self):
         self.selectallbtn.config(state="disabled")
-        
+    
+    def file_extensionsuseroption(self):
+        if(self.cbfileextensions_preserve_val == 1):
+            for rbutton in self.rbextensions:
+                rbutton.configure(state="disabled")
+        else:
+            for rbutton in self.rbextensions:
+                rbutton.configure(state="normal")
 if(__name__ == "__main__"):
     root = Tk()
     root.geometry("640x480")
