@@ -19,8 +19,14 @@ class MainWindow(Frame):
         self.ilwidth    = 40
         self.imgtextframe = Frame(master=self,border=1,relief=GROOVE)
         self.imgtextframe.grid(row=0,column=15,rowspan=15, columnspan=15,sticky="nse")
-        self.optionframe = Frame(master=self,border=1,relief=GROOVE)
-        self.optionframe.grid(row=0,column=0,rowspan=15, columnspan=15,sticky="ns")
+        self.selectfolderframe = Frame(master=self,border=1,relief=GROOVE)
+        self.selectfolderframe.grid(row=0,column=0,rowspan=2, columnspan=15,sticky="nswe")
+       #self.optionframe = Frame(master=self, border=1, relief=GROOVE)
+       #self.optionframe.grid(row=2,column=0,rowspan=13,columnspan=15,sticky="ns")
+        self.qualityframe = Frame(master=self,border=1,relief=GROOVE)
+        self.qualityframe.grid(row=2,column=0,rowspan=2,columnspan=15,sticky="nwse")
+        self.extensionsframe = Frame(master=self,border=1,relief=GROOVE)
+        self.extensionsframe.grid(row=4,column=0,rowspan=4,columnspan=15,sticky="nwse")
         self.master.title="Kurwa App"
         self.cbfileextensions_preserve_val = IntVar()
         self.rbfileextensions_val = IntVar()
@@ -35,10 +41,10 @@ class MainWindow(Frame):
         self.rbfileextensions()
         self.ckbtn_subfolders()
         self.imglist.bind("<<ListboxSelect>>", self.imgselection)
-        self.filebtn = Button(master=self.optionframe,text="Select folder",command=self.selectfolder)
+        self.filebtn = Button(master=self.selectfolderframe,text="Select folder",command=self.selectfolder)
         quitButton = Button(master=self,text="Quit",command=self.quitprogram,height=1)
         quitButton.grid(row=15,column=29,sticky="ne",pady=self.bpad)
-        self.filebtn.grid(row=0,column=0,padx=self.bpad,sticky="n",pady=self.bpad) 
+        self.filebtn.grid(row=0,column=0,padx=30,sticky="n",pady=self.bpad) 
     
     def noimglistbox(self):
         self.nonimglist = Listbox(master=self.imgtextframe,height = self.ilheight, width=self.ilwidth)
@@ -47,20 +53,20 @@ class MainWindow(Frame):
         self.nonimglistscrollbar.config(command=self.nonimglist.yview)
         self.nonimglistscrollbar.grid(row=4,column=1,sticky="nse")
         self.nonimglist.grid(row=4,column=1,padx = self.lbxpad)
-        self.noimglabel = Label(master=self.imgtextframe, text="Not image files").grid(row=3,column=1,sticky="n")
+        self.noimglabel = Label(master=self.imgtextframe, text="Not supported files").grid(row=3,column=1,sticky="n")
    
     def ckbtn_subfolders(self):
-        ckbtn = Checkbutton(master=self.optionframe,text="Subfolders",variable=self.subfoldervar).grid(row=1,column=0)
+        ckbtn = Checkbutton(master=self.selectfolderframe,text="Subfolders",variable=self.subfoldervar).grid(row=1,column=0)
     
     def rbfileextensions(self):
-        Label(master=self.optionframe, text="Target extension").grid(row=5,column=0,sticky="n")
+        Label(master=self.extensionsframe, text="Target extension").grid(row=6,column=0,sticky="n")
         extensions = ["JPEG","GIF","PNG","TIFF","BMP","ICO"]
         self.rbextensions = []
-        currow=6
+        currow=7
         curcol=0
         rbxpad = 0
         for i in range(len(extensions)):
-            self.rbextensions.append(Radiobutton(master=self.optionframe,text=extensions[i],variable=self.rbfileextensions_val))
+            self.rbextensions.append(Radiobutton(master=self.extensionsframe,text=extensions[i],variable=self.rbfileextensions_val))
         for j in range(len(self.rbextensions)):
             self.rbextensions[j].grid(row=currow,column=curcol,sticky="w",padx=rbxpad)
             if(j%2==0 and j > 0):
@@ -72,13 +78,13 @@ class MainWindow(Frame):
                 rbxpad = 60
          
     def cbfileextensions_preserve(self):
-        self.fileextensions = Checkbutton(master=self.optionframe, text="Original extensions",variable=self.cbfileextensions_preserve_val)
-        self.fileextensions.grid(row=4,column=0,sticky="n")
+        self.fileextensions = Checkbutton(master=self.extensionsframe, text="Original extensions",variable=self.cbfileextensions_preserve_val)
+        self.fileextensions.grid(row=5,column=0,sticky="n")
 
     def sliders(self):
-        self.qualityscalelabel = Label(master=self.optionframe, text="Quality").grid(row=3,column=0,sticky="n",pady=10)
-        self.imgqualityslider = Scale(master=self.optionframe, from_=0, to_=10,orient=HORIZONTAL)
-        self.imgqualityslider.grid(row=3,column=0,sticky="n",pady=30)
+        self.qualityscalelabel = Label(master=self.qualityframe, text="Quality").grid(row=3,column=0,sticky="n")
+        self.imgqualityslider = Scale(master=self.qualityframe, from_=0, to_=10,orient=HORIZONTAL)
+        self.imgqualityslider.grid(row=4,column=0,padx=30,sticky="n")
 
     def imglistbox(self):
         self.imglist = Listbox(master=self.imgtextframe,height = self.ilheight, width=self.ilwidth,selectmode=EXTENDED)
