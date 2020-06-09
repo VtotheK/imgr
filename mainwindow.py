@@ -8,7 +8,6 @@ class MainWindow(Frame):
     def __init__(self,master=None):
         Frame.__init__(self,master)
         self.master = master
-        print("Hello from constructor")
         self.window_layout()
     
     def window_layout(self):
@@ -17,12 +16,14 @@ class MainWindow(Frame):
         self.lbypad     = 20
         self.bpad       = 10
         self.ilheight   = 10
-        self.ilwidth    = 30
+        self.ilwidth    = 40
         self.imgtextframe = Frame(master=self,border=1,relief=GROOVE)
         self.imgtextframe.grid(row=0,column=15,rowspan=15, columnspan=15,sticky="nse")
         self.optionframe = Frame(master=self,border=1,relief=GROOVE)
         self.optionframe.grid(row=0,column=0,rowspan=15, columnspan=15,sticky="ns")
         self.master.title="Kurwa App"
+        self.cbfileextensions_preserve_val = IntVar()
+        self.rbfileextensions_val = IntVar()
         self.subfoldervar = IntVar() 
         self.filepath = StringVar()
         self.pack(fill=BOTH,expand=1)
@@ -30,6 +31,8 @@ class MainWindow(Frame):
         self.noimglistbox()
         self.selectallbutton()
         self.sliders()
+        self.cbfileextensions_preserve()
+        self.rbfileextensions()
         self.ckbtn_subfolders()
         self.imglist.bind("<<ListboxSelect>>", self.imgselection)
         self.filebtn = Button(master=self.optionframe,text="Select folder",command=self.selectfolder)
@@ -42,12 +45,35 @@ class MainWindow(Frame):
         self.nonimglistscrollbar = Scrollbar(master=self.imgtextframe, orient=VERTICAL)
         self.nonimglist.config(yscrollcommand=self.nonimglistscrollbar.set)
         self.nonimglistscrollbar.config(command=self.nonimglist.yview)
-        self.nonimglistscrollbar.grid(row=3,column=1,sticky="nse")
-        self.nonimglist.grid(row=3,column=1,padx = self.lbxpad)
-        self.noimglabel = Label(master=self.imgtextframe, text="Not image files").grid(row=2,column=1,sticky="n")
+        self.nonimglistscrollbar.grid(row=4,column=1,sticky="nse")
+        self.nonimglist.grid(row=4,column=1,padx = self.lbxpad)
+        self.noimglabel = Label(master=self.imgtextframe, text="Not image files").grid(row=3,column=1,sticky="n")
    
     def ckbtn_subfolders(self):
         ckbtn = Checkbutton(master=self.optionframe,text="Subfolders",variable=self.subfoldervar).grid(row=1,column=0)
+    
+    def rbfileextensions(self):
+        Label(master=self.optionframe, text="Target extension").grid(row=5,column=0,sticky="n")
+        extensions = ["JPEG","GIF","PNG","TIFF","BMP","ICO"]
+        self.rbextensions = []
+        currow=6
+        curcol=0
+        rbxpad = 0
+        for i in range(len(extensions)):
+            self.rbextensions.append(Radiobutton(master=self.optionframe,text=extensions[i],variable=self.rbfileextensions_val))
+        for j in range(len(self.rbextensions)):
+            self.rbextensions[j].grid(row=currow,column=curcol,sticky="w",padx=rbxpad)
+            if(j%2==0 and j > 0):
+                rbxpad = 0
+                currow = currow + 1
+            elif(j==0):
+                rbxpad = 60
+            else:
+                rbxpad = 60
+         
+    def cbfileextensions_preserve(self):
+        self.fileextensions = Checkbutton(master=self.optionframe, text="Original extensions",variable=self.cbfileextensions_preserve_val)
+        self.fileextensions.grid(row=4,column=0,sticky="n")
 
     def sliders(self):
         self.qualityscalelabel = Label(master=self.optionframe, text="Quality").grid(row=3,column=0,sticky="n",pady=10)
@@ -87,8 +113,8 @@ class MainWindow(Frame):
             self.selectallbtn.config(state="normal")
         
     def selectallbutton(self):
-        self.selectallbtn= Button(master=self.imgtextframe, text="Select all",command=self.selectallimgs)
-        self.selectallbtn.grid(row=2,column=1, sticky="n")
+        self.selectallbtn= Button(master=self.imgtextframe, text="Select all",command=self.selectallimgs,bg="white")
+        self.selectallbtn.grid(row=0,column=1, sticky="e")
 
     def quitprogram(self):
         exit()
