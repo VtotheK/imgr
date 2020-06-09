@@ -26,7 +26,7 @@ class MainWindow(Frame):
         self.qualityframe = Frame(master=self,border=1,relief=GROOVE)
         self.qualityframe.grid(row=2,column=0,rowspan=2,columnspan=15,sticky="nwse")
         self.extensionsframe = Frame(master=self,border=1,relief=GROOVE)
-        self.extensionsframe.grid(row=4,column=0,rowspan=4,columnspan=15,sticky="nwse")
+        self.extensionsframe.grid(row=4,column=0,rowspan=6,columnspan=15,sticky="nwse")
         self.master.title="Kurwa App"
         self.cbfileextensions_preserve_val = IntVar()
         self.rbfileextensions_val = IntVar()
@@ -59,27 +59,38 @@ class MainWindow(Frame):
         ckbtn = Checkbutton(master=self.selectfolderframe,text="Subfolders",variable=self.subfoldervar).grid(row=1,column=0)
     
     def rbfileextensions(self):
-        Label(master=self.extensionsframe, text="Target extension").grid(row=6,column=0,sticky="n")
-        extensions = ["JPEG","GIF","PNG","TIFF","BMP","ICO"]
+        Label(master=self.extensionsframe, text="Output file(s)").grid(row=5,column=0)
+        MODES = [("JPEG","JPEG"),
+                 ("GIF","GIF"),
+                 ("PNG","PNG"),
+                 ("TIFF","TIFF"),
+                 ("BMP","BMP"),
+                 ("ICO","ICO"),
+                 ("PPM","PPM")]
+        extensions = ["JPEG","GIF","PNG","TIFF","BMP","ICO","PPM"]
         self.rbextensions = []
-        currow=7
+        currow=6
         curcol=0
-        rbxpad = 0
-        for i in range(len(extensions)):
-            self.rbextensions.append(Radiobutton(master=self.extensionsframe,text=extensions[i],variable=self.rbfileextensions_val))
+        x_place = 20
+        y_place = 40
+        for text,mode in MODES:
+            self.rbextensions.append(Radiobutton(master=self.extensionsframe,text=text,variable=self.rbfileextensions_val,value=mode))
         for j in range(len(self.rbextensions)):
-            self.rbextensions[j].grid(row=currow,column=curcol,sticky="w",padx=rbxpad)
+            self.rbextensions[j].grid(row=currow,column=curcol,sticky="w")
             if(j%2==0 and j > 0):
-                rbxpad = 0
-                currow = currow + 1
+                y_place = y_place + 20
+                x_place = 20
+                self.rbextensions[j].place(x=x_place,y=y_place)
+                x_place = 90
             elif(j==0):
-                rbxpad = 60
+                self.rbextensions[j].place(x=x_place,y=y_place)
+                x_place = 90
             else:
-                rbxpad = 60
+                self.rbextensions[j].place(x=x_place,y=y_place)
          
     def cbfileextensions_preserve(self):
         self.fileextensions = Checkbutton(master=self.extensionsframe, text="Original extensions",variable=self.cbfileextensions_preserve_val)
-        self.fileextensions.grid(row=5,column=0,sticky="n")
+        self.fileextensions.grid(row=7,column=0,sticky="e")
 
     def sliders(self):
         self.qualityscalelabel = Label(master=self.qualityframe, text="Quality").grid(row=3,column=0,sticky="n")
