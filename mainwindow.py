@@ -18,6 +18,7 @@ class MainWindow(Frame):
         self.bpad       = 10
         self.ilheight   = 10
         self.ilwidth    = 40
+        self.imglistselections = []
         self.cbfileextensions_preserve_val  = IntVar()
         self.rbfileextensions_val           = IntVar()
         self.subfoldervar                   = IntVar() 
@@ -95,8 +96,15 @@ class MainWindow(Frame):
             self.lbl_ratioandor["text"] = "AND"
     
     def layout_startconversion(self):
-        self.btn_startconversion = Button(master=self, text="Convert").grid(row=15,column=0,sticky="nw")
-
+        self.btn_startconversion = Button(master=self, text="Convert",command=self.startconversion).grid(row=15,column=0,sticky="nw")
+        
+    def startconversion(self):
+        print(self.imglistselections)
+        if(self.imglist.size() < 1):
+            ErrorWindow(root,height=150,width=150,message="No images loaded")
+            return
+        elif(len(self.imglistselections) < 1):
+            ErrorWindow(root,height=150,width=150,message="No images selected")
     def rb_fileextensions(self):
         Label(master=self.extensionsframe, text="Output file(s)",font="TkDefaultFont 10 bold").grid(row=5,column=0)
         MODES = [("JPEG","JPEG"),
@@ -150,8 +158,6 @@ class MainWindow(Frame):
 
     def selectallimgs(self):
         self.imglist.select_set(0,END)
-
-    
 
     def readfiles(self):
         if(self.subfoldervar.get() == 1):
