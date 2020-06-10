@@ -2,7 +2,8 @@ import os
 import mainwindow
 from tkinter import *
 
-root = Tk()
-root.geometry("530x480")
-imgrsz = mainwindow.MainWindow(root)
-root.mainloop()
+if(__name__=="__main__"):
+    root = Tk()
+    root.geometry("520x452")
+    imgrsz = mainwindow.MainWindow(root)
+    root.mainloop()
