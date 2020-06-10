@@ -21,6 +21,7 @@ class MainWindow(Frame):
         self.rbfileextensions_val           = IntVar()
         self.subfoldervar                   = IntVar() 
         self.filepath                       = StringVar()
+        self.val_ckbtn_aspectratio           = IntVar()
         
         self.selectfolderframe      = Frame(master=self,border=1,relief=GROOVE)
         self.qualityframe           = Frame(master=self,border=1,relief=GROOVE)
@@ -68,16 +69,26 @@ class MainWindow(Frame):
         self.ckbtn_filebtn.grid(row=0,column=0,padx=30,sticky="n",pady=self.bpad) 
     
     def layout_imagesizeoptions(self):
-        self.ckbtn_preserve_aspectratio     =Checkbutton(master=self.imagesizeoptionsframe, text="Keep aspect ratio")
+        self.ckbtn_preserve_aspectratio     =Checkbutton(master=self.imagesizeoptionsframe, text="Keep aspect ratio",command=self.aspectratio_check,variable=self.val_ckbtn_aspectratio)
         self.ckbtn_maxheight                =Checkbutton(master=self.imagesizeoptionsframe, text="Max height")
         self.ckbtn_maxwidth                 =Checkbutton(master=self.imagesizeoptionsframe, text="Max width")
         self.ent_maxheight                  =Entry(master=self.imagesizeoptionsframe,width=8)
         self.ent_maxwidth                   =Entry(master=self.imagesizeoptionsframe,width=8)
+        self.lbl_ratioandor                 =Label(master=self.imagesizeoptionsframe,text="AND")
+        self.lbl_ratioandor.grid(row=11,column=0,sticky="n",padx=30)
         self.ckbtn_maxheight.grid(row=10,column=0,sticky="w")
-        self.ckbtn_maxwidth.grid(row=11,column=0,sticky="w")
-        self.ent_maxheight.grid(row=11,column=1,sticky="s")
+        self.ckbtn_maxwidth.grid(row=12,column=0,sticky="w")
+        self.ent_maxheight.grid(row=12,column=1,sticky="s")
         self.ent_maxwidth.grid(row=10,column=1,sticky="s")
-        self.ckbtn_preserve_aspectratio.grid(row=9,column=0,sticky="n") 
+        self.ckbtn_preserve_aspectratio.grid(row=9,column=0,sticky="nw",columnspan=2) 
+
+    def aspectratio_check(self):
+        if(self.val_ckbtn_aspectratio.get() == 1):
+            self.lbl_ratioandor["text"] = "OR"
+        else:
+            self.lbl_ratioandor["text"] = "AND"
+
+
     def rb_fileextensions(self):
         Label(master=self.extensionsframe, text="Output file(s)").grid(row=5,column=0)
         MODES = [("JPEG","JPEG"),
