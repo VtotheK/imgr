@@ -21,8 +21,9 @@ class MainWindow(Frame):
         self.rbfileextensions_val           = IntVar()
         self.subfoldervar                   = IntVar() 
         self.filepath                       = StringVar()
-        self.val_ckbtn_aspectratio           = IntVar()
-        
+        self.val_ckbtn_aspectratio          = IntVar()
+        self.val_ckbtn_maxwidth             = IntVar()
+        self.val_ckbtn_mexwidth             = IntVar()
         self.selectfolderframe      = Frame(master=self,border=1,relief=GROOVE)
         self.qualityframe           = Frame(master=self,border=1,relief=GROOVE)
         self.extensionsframe        = Frame(master=self,border=1,relief=GROOVE)
@@ -70,8 +71,8 @@ class MainWindow(Frame):
     
     def layout_imagesizeoptions(self):
         self.ckbtn_preserve_aspectratio     =Checkbutton(master=self.imagesizeoptionsframe, text="Keep aspect ratio",command=self.aspectratio_check,variable=self.val_ckbtn_aspectratio)
-        self.ckbtn_maxheight                =Checkbutton(master=self.imagesizeoptionsframe, text="Max height")
-        self.ckbtn_maxwidth                 =Checkbutton(master=self.imagesizeoptionsframe, text="Max width")
+        self.ckbtn_maxheight                =Checkbutton(master=self.imagesizeoptionsframe, text="Max height",variable=self.val_ckbtn_maxheight)
+        self.ckbtn_maxwidth                 =Checkbutton(master=self.imagesizeoptionsframe, text="Max width",variable=self.val_ckbtn_maxwidth)
         self.ent_maxheight                  =Entry(master=self.imagesizeoptionsframe,width=8)
         self.ent_maxwidth                   =Entry(master=self.imagesizeoptionsframe,width=8)
         self.lbl_ratioandor                 =Label(master=self.imagesizeoptionsframe,text="AND")
