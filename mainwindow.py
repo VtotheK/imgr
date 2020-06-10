@@ -17,36 +17,41 @@ class MainWindow(Frame):
         self.bpad       = 10
         self.ilheight   = 10
         self.ilwidth    = 40
-        self.imgtextframe = Frame(master=self,border=1,relief=GROOVE)
+        self.cbfileextensions_preserve_val  = IntVar()
+        self.rbfileextensions_val           = IntVar()
+        self.subfoldervar                   = IntVar() 
+        self.filepath                       = StringVar()
+        
+        self.selectfolderframe      = Frame(master=self,border=1,relief=GROOVE)
+        self.qualityframe           = Frame(master=self,border=1,relief=GROOVE)
+        self.extensionsframe        = Frame(master=self,border=1,relief=GROOVE)
+        self.imagesizeoptionsframe  = Frame(master=self,border=1,relief=GROOVE)
+        self.imgtextframe           = Frame(master=self,border=1,relief=GROOVE)
+        self.extensionsframe        = Frame(master=self,border=1,relief=GROOVE)
+        
         self.imgtextframe.grid(row=0,column=15,rowspan=15, columnspan=15,sticky="nse")
-        self.selectfolderframe = Frame(master=self,border=1,relief=GROOVE)
         self.selectfolderframe.grid(row=0,column=0,rowspan=2, columnspan=15,sticky="nswe")
-       #self.optionframe = Frame(master=self, border=1, relief=GROOVE)
-       #self.optionframe.grid(row=2,column=0,rowspan=13,columnspan=15,sticky="ns")
-        self.qualityframe = Frame(master=self,border=1,relief=GROOVE)
         self.qualityframe.grid(row=2,column=0,rowspan=2,columnspan=15,sticky="nwse")
-        self.extensionsframe = Frame(master=self,border=1,relief=GROOVE)
-        self.extensionsframe.grid(row=4,column=0,rowspan=6,columnspan=15,sticky="nwse")
+        self.extensionsframe.grid(row=4,column=0,rowspan=5,columnspan=15,sticky="nwse")
+        self.imagesizeoptionsframe.grid(row=9,column=0, rowspan=6,columnspan=15,sticky="nwse")
+        
         self.master.title="Kurwa App"
-        self.cbfileextensions_preserve_val = IntVar()
-        self.rbfileextensions_val = IntVar()
-        self.subfoldervar = IntVar() 
-        self.filepath = StringVar()
         self.pack(fill=BOTH,expand=1)
-        self.imglistbox()
-        self.noimglistbox()
-        self.selectallbutton()
-        self.sliders()
-        self.cbfileextensions_preserve()
-        self.rbfileextensions()
-        self.ckbtn_subfolders()
+        self.layout_imglistbox()
+        self.layout_noimglistbox()
+        self.layout_fileselection()
+        self.layout_qualityslider()
+        self.layout_imagesizeoptions()
+        self.cb_fileextensions_preserve()
+        self.rb_fileextensions()
         self.imglist.bind("<<ListboxSelect>>", self.imgselection)
-        self.filebtn = Button(master=self.selectfolderframe,text="Select folder",command=self.selectfolder)
+        
         quitButton = Button(master=self,text="Quit",command=self.quitprogram,height=1)
         quitButton.grid(row=15,column=29,sticky="ne",pady=self.bpad)
-        self.filebtn.grid(row=0,column=0,padx=30,sticky="n",pady=self.bpad) 
+        
+        self.start_disableoptions() 
     
-    def noimglistbox(self):
+    def layout_noimglistbox(self):
         self.nonimglist = Listbox(master=self.imgtextframe,height = self.ilheight, width=self.ilwidth)
         self.nonimglistscrollbar = Scrollbar(master=self.imgtextframe, orient=VERTICAL)
         self.nonimglist.config(yscrollcommand=self.nonimglistscrollbar.set)
@@ -55,10 +60,25 @@ class MainWindow(Frame):
         self.nonimglist.grid(row=4,column=1,padx = self.lbxpad)
         self.noimglabel = Label(master=self.imgtextframe, text="Not supported files").grid(row=3,column=1,sticky="n")
    
-    def ckbtn_subfolders(self):
-        ckbtn = Checkbutton(master=self.selectfolderframe,text="Subfolders",variable=self.subfoldervar).grid(row=1,column=0)
+    def layout_fileselection(self):
+        self.ckbtn_filebtn      =Button(master=self.selectfolderframe,text="Select folder",command=self.selectfolder)
+        self.ckbtn_subfolders   =Checkbutton(master=self.selectfolderframe,text="Subfolders",variable=self.subfoldervar).grid(row=1,column=0)
+        self.dg_selectallbtn    =Button(master=self.imgtextframe, text="Select all",command=self.selectallimgs,bg="white")
+        self.dg_selectallbtn.grid(row=0,column=1, sticky="e")
+        self.ckbtn_filebtn.grid(row=0,column=0,padx=30,sticky="n",pady=self.bpad) 
     
-    def rbfileextensions(self):
+    def layout_imagesizeoptions(self):
+        self.ckbtn_preserve_aspectratio     =Checkbutton(master=self.imagesizeoptionsframe, text="Keep aspect ratio")
+        self.ckbtn_maxheight                =Checkbutton(master=self.imagesizeoptionsframe, text="Max height")
+        self.ckbtn_maxwidth                 =Checkbutton(master=self.imagesizeoptionsframe, text="Max width")
+        self.ent_maxheight                  =Entry(master=self.imagesizeoptionsframe,width=8)
+        self.ent_maxwidth                   =Entry(master=self.imagesizeoptionsframe,width=8)
+        self.ckbtn_maxheight.grid(row=10,column=0,sticky="w")
+        self.ckbtn_maxwidth.grid(row=11,column=0,sticky="w")
+        self.ent_maxheight.grid(row=11,column=1,sticky="s")
+        self.ent_maxwidth.grid(row=10,column=1,sticky="s")
+        self.ckbtn_preserve_aspectratio.grid(row=9,column=0,sticky="n") 
+    def rb_fileextensions(self):
         Label(master=self.extensionsframe, text="Output file(s)").grid(row=5,column=0)
         MODES = [("JPEG","JPEG"),
                  ("GIF","GIF"),
@@ -88,16 +108,16 @@ class MainWindow(Frame):
             else:
                 self.rbextensions[j].place(x=x_place,y=y_place)
          
-    def cbfileextensions_preserve(self):
-        self.fileextensions = Checkbutton(master=self.extensionsframe, text="Original extensions",variable=self.cbfileextensions_preserve_val,command=self.file_extensionsuseroption)
-        self.fileextensions.grid(row=7,column=0,sticky="e")
+    def cb_fileextensions_preserve(self):
+        self.ckbtn_fileextensions = Checkbutton(master=self.extensionsframe, text="Original extensions",variable=self.cbfileextensions_preserve_val,command=self.file_extensionsuseroption)
+        self.ckbtn_fileextensions.grid(row=7,column=0,sticky="e")
 
-    def sliders(self):
+    def layout_qualityslider(self):
         self.qualityscalelabel = Label(master=self.qualityframe, text="Quality").grid(row=3,column=0,sticky="n")
         self.imgqualityslider = Scale(master=self.qualityframe, from_=0, to_=10,orient=HORIZONTAL)
         self.imgqualityslider.grid(row=4,column=0,padx=30,sticky="n")
 
-    def imglistbox(self):
+    def layout_imglistbox(self):
         self.imglist = Listbox(master=self.imgtextframe,height = self.ilheight, width=self.ilwidth,selectmode=EXTENDED)
         self.imglistscrollbar = Scrollbar(master=self.imgtextframe, orient=VERTICAL)
         self.imglist.config(yscrollcommand=self.imglistscrollbar.set)
@@ -125,14 +145,10 @@ class MainWindow(Frame):
         for j in range(len(nonimgfiles)):
             self.nonimglist.insert(END,nonimgfiles[j])
         if(self.imglist.size() < 1 ):
-            self.selectallbtn.config(state="disabled")
+            self.dg_selectallbtn.config(state="disabled")
         else:
-            self.selectallbtn.config(state="normal")
+            self.dg_selectallbtn.config(state="normal")
         
-    def selectallbutton(self):
-        self.selectallbtn= Button(master=self.imgtextframe, text="Select all",command=self.selectallimgs,bg="white")
-        self.selectallbtn.grid(row=0,column=1, sticky="e")
-
     def quitprogram(self):
         exit()
 
@@ -142,16 +158,20 @@ class MainWindow(Frame):
         if(self.filepath):
             self.readfiles()
 
-    def startdisableoptions(self):
-        self.selectallbtn.config(state="disabled")
+    def start_disableoptions(self):
+        self.dg_selectallbtn.config(state="disabled")
+        for rbutton in self.rbextensions:
+            rbutton.configure(state="disabled")
+        self.ckbtn_fileextensions.select()
     
     def file_extensionsuseroption(self):
-        if(self.cbfileextensions_preserve_val == 1):
+        if(self.cbfileextensions_preserve_val.get() == 1):
             for rbutton in self.rbextensions:
                 rbutton.configure(state="disabled")
         else:
             for rbutton in self.rbextensions:
                 rbutton.configure(state="normal")
+
 if(__name__ == "__main__"):
     root = Tk()
     root.geometry("640x480")
