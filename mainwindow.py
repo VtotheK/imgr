@@ -1,6 +1,7 @@
 #!usr/bin/python3
 import irutil 
 import oututil
+import errorwindow 
 from tkinter import *
 from tkinter import filedialog
 
@@ -10,7 +11,7 @@ class MainWindow(Frame):
         Frame.__init__(self,master)
         self.master = master
         self.window_layout()
-    
+   
     def window_layout(self):
         self.cacheddir  = "/"
         self.lbxpad     = 10
@@ -40,7 +41,7 @@ class MainWindow(Frame):
         self.imagesizeoptionsframe.grid(row=9,column=0, rowspan=6,columnspan=15,sticky="nwse")
         
 
-        self.master.title="Kurwa App"
+        #self.master.title="Kurwa App"
         self.pack(fill=BOTH,expand=1)
         self.layout_imglistbox()
         self.layout_noimglistbox()
@@ -101,10 +102,12 @@ class MainWindow(Frame):
     def startconversion(self):
         print(self.imglistselections)
         if(self.imglist.size() < 1):
-            ErrorWindow(root,height=150,width=150,message="No images loaded")
+            errorwindow.ErrorWindow(root=self.master)
             return
         elif(len(self.imglistselections) < 1):
-            ErrorWindow(root,height=150,width=150,message="No images selected")
+            errorwindow.ErrorWindow(root=self.master)
+            return
+
     def rb_fileextensions(self):
         Label(master=self.extensionsframe, text="Output file(s)",font="TkDefaultFont 10 bold").grid(row=5,column=0)
         MODES = [("JPEG","JPEG"),
