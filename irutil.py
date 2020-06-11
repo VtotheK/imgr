@@ -45,3 +45,13 @@ def imgpathstr(fname,path,img):
     imgsize     = str(img.size[0]) + "x" +  str(img.size[1])
     fname       = fname.replace(path,'')
     return fname
+
+def isnumber(c):
+    if(len(c) < 1):
+       return False
+    for i in range(len(c)):
+        if(not ord(c[i]) > 47 or not ord(c[i]) < 58):
+            return False
+    if(int(float(c)) == 0):
+        return False
+    return True

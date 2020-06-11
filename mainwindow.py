@@ -1,4 +1,5 @@
 #!usr/bin/python3
+import imageprocessor as ip
 import irutil 
 import oututil
 import errorwindow 
@@ -6,12 +7,12 @@ from tkinter import *
 from tkinter import filedialog
 
 class MainWindow(Frame):
-    
+
     def __init__(self,master=None):
         Frame.__init__(self,master)
         self.master = master
         self.window_layout()
-   
+
     def window_layout(self):
         self.cacheddir  = "/"
         self.lbxpad     = 10
@@ -33,15 +34,13 @@ class MainWindow(Frame):
         self.imagesizeoptionsframe  = Frame(master=self,border=1,relief=GROOVE)
         self.imgtextframe           = Frame(master=self,border=1,relief=GROOVE)
         self.extensionsframe        = Frame(master=self,border=1,relief=GROOVE)
-         
+
         self.imgtextframe.grid(row=0,column=15,rowspan=15, columnspan=15,sticky="nse")
         self.selectfolderframe.grid(row=0,column=0,rowspan=2, columnspan=15,sticky="nswe")
         self.qualityframe.grid(row=2,column=0,rowspan=2,columnspan=15,sticky="nwse")
         self.extensionsframe.grid(row=4,column=0,rowspan=5,columnspan=15,sticky="nwse")
         self.imagesizeoptionsframe.grid(row=9,column=0, rowspan=6,columnspan=15,sticky="nwse")
-        
 
-        #self.master.title="Kurwa App"
         self.pack(fill=BOTH,expand=1)
         self.layout_imglistbox()
         self.layout_noimglistbox()
@@ -52,12 +51,12 @@ class MainWindow(Frame):
         self.cb_fileextensions_preserve()
         self.rb_fileextensions()
         self.imglist.bind("<<ListboxSelect>>", self.imgselection)
-        
+
         quitButton = Button(master=self,text="Quit",command=self.quitprogram,height=1)
         quitButton.grid(row=15,column=29,sticky="ne")
-        
+
         self.start_disableoptions() 
-    
+
     def layout_noimglistbox(self):
         self.nonimglist = Listbox(master=self.imgtextframe,height = self.ilheight, width=self.ilwidth)
         self.nonimglistscrollbar = Scrollbar(master=self.imgtextframe, orient=VERTICAL)
@@ -66,14 +65,14 @@ class MainWindow(Frame):
         self.nonimglistscrollbar.grid(row=4,column=1,sticky="nse")
         self.nonimglist.grid(row=4,column=1,padx = self.lbxpad)
         self.noimglabel = Label(master=self.imgtextframe, text="Not supported files").grid(row=3,column=1,sticky="n")
-   
+
     def layout_fileselection(self):
         self.ckbtn_filebtn      =Button(master=self.selectfolderframe,text="Select folder",command=self.selectfolder)
         self.ckbtn_subfolders   =Checkbutton(master=self.selectfolderframe,text="Subfolders",variable=self.subfoldervar).grid(row=1,column=0)
         self.dg_selectallbtn    =Button(master=self.imgtextframe, text="Select all",command=self.selectallimgs,bg="white")
         self.dg_selectallbtn.grid(row=0,column=1, sticky="e")
         self.ckbtn_filebtn.grid(row=0,column=0,padx=30,sticky="n",pady=self.bpad) 
-    
+
     def layout_imagesizeoptions(self):
         self.header                         =Label(master=self.imagesizeoptionsframe, text="Image size options", font="TkDefaultFont 10 bold")
         self.ckbtn_preserve_aspectratio     =Checkbutton(master=self.imagesizeoptionsframe, text="Keep aspect ratio",command=self.aspectratio_check,variable=self.val_ckbtn_aspectratio)
@@ -95,28 +94,57 @@ class MainWindow(Frame):
             self.lbl_ratioandor["text"] = "OR"
         else:
             self.lbl_ratioandor["text"] = "AND"
-    
+
     def layout_startconversion(self):
         self.btn_startconversion = Button(master=self, text="Convert",command=self.startconversion).grid(row=15,column=0,sticky="nw")
-        
+
+
+    #TODO make errorwindow descriptions     
     def startconversion(self):
-        print(self.imglistselections)
+        height = width = False 
+        #print(type(self.imglistselections))
+        if(not self.filepath):
+            errorwindow.ErrorWindow(root=self.master)
+            return
         if(self.imglist.size() < 1):
             errorwindow.ErrorWindow(root=self.master)
             return
         elif(len(self.imglistselections) < 1):
             errorwindow.ErrorWindow(root=self.master)
             return
+        elif(self.val_ckbtn_maxheight.get() == 0 and self.val_ckbtn_maxwidth.get() == 0):
+            errorwindow.ErrorWindow(root=self.master)
+            return
+        if(self.val_ckbtn_maxheight.get() == 1):
+            h = self.ent_maxheight.get()
+            if(not irutil.isnumber(h)):
+                print("ERR HEIGHT")
+                errorwindow.ErrorWindow(root=self.master)
+                return
+            height = True
+        if(self.val_ckbtn_maxwidth.get() == 1 ):
+            w = self.ent_maxwidth.get()
+            if(not irutil.isnumber(w)):
+                errorwindow.ErrorWindow(root=self.master)
+                print("ERR WIDTH")
+                return
+            width = True
+        fullpaths = []
+        for i in self.imglistselections:
+            path = self.filepath + self.imgfilenames[i]
+            fullpaths.append(path)
+            print(path)
+       #ip.process(self.filepath,imgfiles, 
 
     def rb_fileextensions(self):
         Label(master=self.extensionsframe, text="Output file(s)",font="TkDefaultFont 10 bold").grid(row=5,column=0)
         MODES = [("JPEG","JPEG"),
-                 ("GIF","GIF"),
-                 ("PNG","PNG"),
-                 ("TIFF","TIFF"),
-                 ("BMP","BMP"),
-                 ("ICO","ICO"),
-                 ("PPM","PPM")]
+                ("GIF","GIF"),
+                ("PNG","PNG"),
+                ("TIFF","TIFF"),
+                ("BMP","BMP"),
+                ("ICO","ICO"),
+                ("PPM","PPM")]
         extensions = ["JPEG","GIF","PNG","TIFF","BMP","ICO","PPM"]
         self.rbextensions = []
         currow=6
@@ -137,7 +165,7 @@ class MainWindow(Frame):
                 x_place = 90
             else:
                 self.rbextensions[j].place(x=x_place,y=y_place)
-         
+
     def cb_fileextensions_preserve(self):
         self.ckbtn_fileextensions = Checkbutton(master=self.extensionsframe, text="Original extensions",variable=self.cbfileextensions_preserve_val,command=self.file_extensionsuseroption)
         self.ckbtn_fileextensions.grid(row=7,column=0,sticky="e")
@@ -155,7 +183,7 @@ class MainWindow(Frame):
         self.imglistscrollbar.grid(row=1,column=1,sticky="nse")
         self.imglist.grid(row=1,column=1)
         self.imglabel = Label(master=self.imgtextframe, text="Images").grid(row=0,column=1,sticky="n") 
-    
+
     def imgselection(self,event):
         self.imglistselections = event.widget.curselection()
 
@@ -164,21 +192,21 @@ class MainWindow(Frame):
 
     def readfiles(self):
         if(self.subfoldervar.get() == 1):
-            imgfilenames,nonimgfiles,imgfiles = irutil.getfiles(self.filepath,subfolders=True)
+            self.imgfilenames,self.nonimgfiles,self.imgfiles = irutil.getfiles(self.filepath,subfolders=True)
         else:
-            imgfilenames,nonimgfiles,imgfiles = irutil.getfiles(self.filepath,subfolders=False)
+            self.imgfilenames,self.nonimgfiles,self.imgfiles = irutil.getfiles(self.filepath,subfolders=False)
         if(self.imglist.size() > 0 or self.nonimglist.size() > 0):
             self.imglist.delete(0,END)
             self.nonimglist.delete(0,END)
-        for i in range(len(imgfiles)):
-            self.imglist.insert(END,imgfilenames[i])
-        for j in range(len(nonimgfiles)):
-            self.nonimglist.insert(END,nonimgfiles[j])
+        for i in range(len(self.imgfiles)):
+            self.imglist.insert(END,self.imgfilenames[i])
+        for j in range(len(self.nonimgfiles)):
+            self.nonimglist.insert(END,self.nonimgfiles[j])
         if(self.imglist.size() < 1 ):
             self.dg_selectallbtn.config(state="disabled")
         else:
             self.dg_selectallbtn.config(state="normal")
-        
+
     def quitprogram(self):
         exit()
 
@@ -193,7 +221,7 @@ class MainWindow(Frame):
         for rbutton in self.rbextensions:
             rbutton.configure(state="disabled")
         self.ckbtn_fileextensions.select()
-    
+
     def file_extensionsuseroption(self):
         if(self.cbfileextensions_preserve_val.get() == 1):
             for rbutton in self.rbextensions:
