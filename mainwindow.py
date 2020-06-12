@@ -22,7 +22,7 @@ class MainWindow(Frame):
         self.ilwidth    = 40
         self.imglistselections = []
         self.cbfileextensions_preserve_val  = IntVar()
-        self.rbfileextensions_val           = IntVar()
+        self.rbfileextensions_val           = StringVar()
         self.subfoldervar                   = IntVar() 
         self.filepath                       = StringVar()
         self.val_ckbtn_aspectratio          = IntVar()
@@ -85,8 +85,8 @@ class MainWindow(Frame):
         self.lbl_ratioandor.grid(row=12,column=0,sticky="n",padx=30)
         self.ckbtn_maxheight.grid(row=11,column=0,sticky="w")
         self.ckbtn_maxwidth.grid(row=13,column=0,sticky="w")
-        self.ent_maxheight.grid(row=13,column=1,sticky="s")
-        self.ent_maxwidth.grid(row=11,column=1,sticky="s")
+        self.ent_maxheight.grid(row=11,column=1,sticky="s")
+        self.ent_maxwidth.grid(row=13,column=1,sticky="s")
         self.ckbtn_preserve_aspectratio.grid(row=10,column=0,sticky="nw",columnspan=2) 
 
     def aspectratio_check(self):
@@ -101,8 +101,9 @@ class MainWindow(Frame):
 
     #TODO make errorwindow descriptions     
     def startconversion(self):
-        height = width = False 
-        #print(type(self.imglistselections))
+        height = width = aspectratio = preserve_extensions =  False
+        userextension = None
+        maxheight=maxwidth=0
         if(not self.filepath):
             errorwindow.ErrorWindow(root=self.master)
             return
@@ -118,7 +119,6 @@ class MainWindow(Frame):
         if(self.val_ckbtn_maxheight.get() == 1):
             h = self.ent_maxheight.get()
             if(not irutil.isnumber(h)):
-                print("ERR HEIGHT")
                 errorwindow.ErrorWindow(root=self.master)
                 return
             height = True
@@ -126,18 +126,20 @@ class MainWindow(Frame):
             w = self.ent_maxwidth.get()
             if(not irutil.isnumber(w)):
                 errorwindow.ErrorWindow(root=self.master)
-                print("ERR WIDTH")
                 return
             width = True
+        aspectratio         = (False,True)[self.val_ckbtn_aspectratio.get() == 1]
+        preserveextensions  = (False,True)[self.cbfileextensions_preserve_val.get() == 1]
+        extensions = []
+        if(not preserveextensions):
+            userextension = self.rbfileextensions_val.get() 
         fullpaths = []
         for i in self.imglistselections:
             path = self.filepath + self.imgfilenames[i]
             fullpaths.append(path)
-            print(path)
-       #ip.process(self.filepath,imgfiles, 
+        ip.process(self.filepath,fullpaths,maxheight,maxwidth,preserveextensions,aspectratio)
 
     def rb_fileextensions(self):
-        Label(master=self.extensionsframe, text="Output file(s)",font="TkDefaultFont 10 bold").grid(row=5,column=0)
         MODES = [("JPEG","JPEG"),
                 ("GIF","GIF"),
                 ("PNG","PNG"),
@@ -219,7 +221,7 @@ class MainWindow(Frame):
     def start_disableoptions(self):
         self.dg_selectallbtn.config(state="disabled")
         for rbutton in self.rbextensions:
-            rbutton.configure(state="disabled")
+            rbutton.configure(state="disabled",tristatevalue = 0)
         self.ckbtn_fileextensions.select()
 
     def file_extensionsuseroption(self):

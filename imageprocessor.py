@@ -1,4 +1,4 @@
 import PIL
 
-#def process(imgpaths,imgs,maxheight=None,maxwidth=None,originalextensions=True,aspectratio=True):
-
+def process(filepath, imgpaths,maxheight=None,maxwidth=None,perserveextensions=True,aspectratio=True):
+    pass
