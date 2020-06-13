@@ -1,6 +1,5 @@
 import os
-
-
+#TODO untested
 def createoutputdir(path,dirname):
     fullpath = path + "/" + dirname
     accessrights = 0o777
@@ -21,5 +20,5 @@ def createoutputdir(path,dirname):
                 pass
             except OSError as err:
                 if(err.errno == errno.EEXIST):
-                        return false
+                        return False
     return True

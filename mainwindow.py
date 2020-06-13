@@ -27,6 +27,7 @@ class MainWindow(Frame):
         self.filepath                       = StringVar()
         self.val_ckbtn_aspectratio          = IntVar()
         self.val_ckbtn_maxheight            = IntVar()
+        self.val_multithreading             = IntVar()
         self.val_ckbtn_maxwidth             = IntVar()
         self.selectfolderframe      = Frame(master=self,border=1,relief=GROOVE)
         self.qualityframe           = Frame(master=self,border=1,relief=GROOVE)
@@ -78,6 +79,7 @@ class MainWindow(Frame):
         self.ckbtn_preserve_aspectratio     =Checkbutton(master=self.imagesizeoptionsframe, text="Keep aspect ratio",command=self.aspectratio_check,variable=self.val_ckbtn_aspectratio)
         self.ckbtn_maxheight                =Checkbutton(master=self.imagesizeoptionsframe, text="Max height",variable=self.val_ckbtn_maxheight)
         self.ckbtn_maxwidth                 =Checkbutton(master=self.imagesizeoptionsframe, text="Max width",variable=self.val_ckbtn_maxwidth)
+        self.ckbtn_multithreading           =Checkbutton(master=self.imagesizeoptionsframe, text="Multithreading",variable=self.val_multithreading)
         self.ent_maxheight                  =Entry(master=self.imagesizeoptionsframe,width=8)
         self.ent_maxwidth                   =Entry(master=self.imagesizeoptionsframe,width=8)
         self.lbl_ratioandor                 =Label(master=self.imagesizeoptionsframe,text="AND")
@@ -88,6 +90,7 @@ class MainWindow(Frame):
         self.ent_maxheight.grid(row=11,column=1,sticky="s")
         self.ent_maxwidth.grid(row=13,column=1,sticky="s")
         self.ckbtn_preserve_aspectratio.grid(row=10,column=0,sticky="nw",columnspan=2) 
+        self.ckbtn_multithreading.grid(row=14,column=0,sticky="nw")
 
     def aspectratio_check(self):
         if(self.val_ckbtn_aspectratio.get() == 1):
@@ -101,35 +104,36 @@ class MainWindow(Frame):
 
     #TODO make errorwindow descriptions     
     def startconversion(self):
-        height = width = aspectratio = preserve_extensions =  False
+        height = width = aspectratio = multithreading = preserve_extensions =  False
         userextension = None
         maxheight=maxwidth=0
         if(not self.filepath):
-            errorwindow.ErrorWindow(root=self.master)
+            errorwindow.ErrorWindow(root=self.master, title="No destination folder specified")
             return
         if(self.imglist.size() < 1):
-            errorwindow.ErrorWindow(root=self.master)
+            errorwindow.ErrorWindow(root=self.master,title="No images loaded")
             return
         elif(len(self.imglistselections) < 1):
-            errorwindow.ErrorWindow(root=self.master)
+            errorwindow.ErrorWindow(root=self.master,title="No images selected")
             return
         elif(self.val_ckbtn_maxheight.get() == 0 and self.val_ckbtn_maxwidth.get() == 0):
-            errorwindow.ErrorWindow(root=self.master)
+            errorwindow.ErrorWindow(root=self.master,title="No max height or max width specified")
             return
         if(self.val_ckbtn_maxheight.get() == 1):
             h = self.ent_maxheight.get()
             if(not irutil.isnumber(h)):
-                errorwindow.ErrorWindow(root=self.master)
+                errorwindow.ErrorWindow(root=self.master,title="Max height not a number")
                 return
             height = True
         if(self.val_ckbtn_maxwidth.get() == 1 ):
             w = self.ent_maxwidth.get()
             if(not irutil.isnumber(w)):
-                errorwindow.ErrorWindow(root=self.master)
+                errorwindow.ErrorWindow(root=self.master,title="Max width not a number")
                 return
             width = True
         aspectratio         = (False,True)[self.val_ckbtn_aspectratio.get() == 1]
         preserveextensions  = (False,True)[self.cbfileextensions_preserve_val.get() == 1]
+        multithreading      = (False,True)[self.val_multithreading.get() == 1] 
         extensions = []
         if(not preserveextensions):
             userextension = self.rbfileextensions_val.get() 
@@ -137,7 +141,7 @@ class MainWindow(Frame):
         for i in self.imglistselections:
             path = self.filepath + self.imgfilenames[i]
             fullpaths.append(path)
-        ip.process(self.filepath,fullpaths,maxheight,maxwidth,preserveextensions,aspectratio)
+        ip.process(self.filepath,fullpaths,maxheight,maxwidth,preserveextensions,userextension,aspectratio)
 
     def rb_fileextensions(self):
         MODES = [("JPEG","JPEG"),
