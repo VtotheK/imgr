@@ -2,6 +2,7 @@
 import imageprocessor as ip
 import irutil 
 import oututil
+from datetime import datetime
 import errorwindow 
 from tkinter import *
 from tkinter import filedialog
@@ -80,8 +81,8 @@ class MainWindow(Frame):
         self.ckbtn_maxheight                =Checkbutton(master=self.imagesizeoptionsframe, text="Max height",variable=self.val_ckbtn_maxheight)
         self.ckbtn_maxwidth                 =Checkbutton(master=self.imagesizeoptionsframe, text="Max width",variable=self.val_ckbtn_maxwidth)
         self.ckbtn_multithreading           =Checkbutton(master=self.imagesizeoptionsframe, text="Multithreading",variable=self.val_multithreading)
-        self.ent_maxheight                  =Entry(master=self.imagesizeoptionsframe,width=8)
-        self.ent_maxwidth                   =Entry(master=self.imagesizeoptionsframe,width=8)
+        self.ent_maxheight                  =Entry(master=self.imagesizeoptionsframe,width=5)
+        self.ent_maxwidth                   =Entry(master=self.imagesizeoptionsframe,width=5)
         self.lbl_ratioandor                 =Label(master=self.imagesizeoptionsframe,text="AND")
         self.header.grid(row=9,column=0, sticky="n", columnspan=2)
         self.lbl_ratioandor.grid(row=12,column=0,sticky="n",padx=30)
@@ -104,6 +105,14 @@ class MainWindow(Frame):
 
     #TODO make errorwindow descriptions     
     def startconversion(self):
+        today = date.today()
+        now = datetime.now()
+        current_time = time(now.hour,now.minute,now.second)
+        dirname = str(datetime.combine(today,current_time))
+        fcreated, message=oututil.createoutputdir(self.filepath,dirname)
+        if(not fcreated):
+            print("Could not create output folder, reason: %s", message)
+            exit()
         height = width = aspectratio = multithreading = preserve_extensions =  False
         userextension = None
         maxheight=maxwidth=0

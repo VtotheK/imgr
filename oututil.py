@@ -2,23 +2,16 @@ import os
 #TODO untested
 def createoutputdir(path,dirname):
     fullpath = path + "/" + dirname
-    accessrights = 0o777
-    tries = 0
-    index = -1
-    created = False
+    accessrights = 0o755
     try:
         os.makedirs(fullpath,accessrights)
     except FileExistsError:
-        while(not created or tries < 100):
-            index = index + 1
-            fullpath = path + "/" + dirname + str(index)
-            tries = tries + 1
-            try:
-                os.makedirs(fullpath,accessrights)
-                created = True
-            except FileExistsError:
-                pass
-            except OSError as err:
-                if(err.errno == errno.EEXIST):
-                        return False
-    return True
+        fullpath = path + "/" + dirname
+        try:
+            os.makedirs(fullpath,accessrights)
+        except FileExistsError:
+            return False, "Folder already exists"
+        except OSError as err:
+            if(err.errno == errno.EEXIST):
+                    return False, "FUCK"
+    return True, None
