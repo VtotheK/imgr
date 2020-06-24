@@ -40,7 +40,7 @@ class MainWindow(Frame):
 
         self.imgtextframe.grid(row=0,column=15,rowspan=15, columnspan=15,sticky="nse")
         self.selectfolderframe.grid(row=0,column=0,rowspan=2, columnspan=15,sticky="nswe")
-        self.outputfolderframe.grid(row=2,column=0,rowspan=1, columnspan=15,sticky="nswe")
+        self.outputfolderframe.grid(row=2,column=0,rowspan=2,columnspan=15,sticky="nswe")
         self.qualityframe.grid(row=3,column=0,rowspan=3,columnspan=15,sticky="nwse")
         self.extensionsframe.grid(row=6,column=0,rowspan=5,columnspan=15,sticky="nwse")
         self.imagesizeoptionsframe.grid(row=11,column=0, rowspan=6,columnspan=15,sticky="nwse")
@@ -49,6 +49,7 @@ class MainWindow(Frame):
         self.layout_imglistbox()
         self.layout_noimglistbox()
         self.layout_fileselection()
+        self.layout_outputfolderselection()
         self.layout_qualityslider()
         self.layout_imagesizeoptions()
         self.layout_startconversion()
@@ -70,8 +71,14 @@ class MainWindow(Frame):
         self.nonimglist.grid(row=4,column=1,padx = self.lbxpad)
         self.noimglabel = Label(master=self.imgtextframe, text="Not supported files").grid(row=3,column=1,sticky="n")
 
+    def layout_outputfolderselection(self):
+        self.ckbtn_outputfolder = Button(master=self.outputfolderframe,text="Output folder",command=self.outputfolder)
+        self.ckbtn_outputfolder.grid(row=2,column=0)
+        self.ckbtn_outputfolder.place(relx=0.5,rely=0.25,anchor=CENTER)
+
+
     def layout_fileselection(self):
-        self.ckbtn_filebtn      =Button(master=self.selectfolderframe,text="Select folder",command=self.selectfolder)
+        self.ckbtn_filebtn      =Button(master=self.selectfolderframe,text="Input folder",command=self.selectfolder)
         self.ckbtn_subfolders   =Checkbutton(master=self.selectfolderframe,text="Subfolders",variable=self.subfoldervar).grid(row=1,column=0)
         self.dg_selectallbtn    =Button(master=self.imgtextframe, text="Select all",command=self.selectallimgs,bg="white")
         self.dg_selectallbtn.grid(row=0,column=1, sticky="e")
@@ -111,7 +118,8 @@ class MainWindow(Frame):
         now = datetime.now()
         current_time = time(now.hour,now.minute,now.second)
         dirname = str(datetime.combine(today,current_time))
-        fcreated, message=oututil.createoutputdir(self.filepath,dirname)
+        outputpath = (self.outputpath,self.filepath)[self.outputpath is None]
+        fcreated, message=oututil.createoutputdir(outputpath,dirname)
         if(not fcreated):
             print("Could not create output folder, reason: %s", message)
             exit()
@@ -154,7 +162,7 @@ class MainWindow(Frame):
         for i in self.imglistselections:
             path = self.filepath + self.imgfilenames[i]
             fullpaths.append(path)
-        ip.process(self.filepath,fullpaths,maxheight,maxwidth,preserveextensions,userextension,aspectratio,multithreading)
+        ip.process(self.filepath,fullpaths,outputpath,maxheight,maxwidth,preserveextensions,userextension,aspectratio,multithreading)
 
     def rb_fileextensions(self):
         MODES = [("JPEG","JPEG"),
@@ -162,14 +170,14 @@ class MainWindow(Frame):
                 ("PNG","PNG"),
                 ("TIFF","TIFF"),
                 ("BMP","BMP"),
-                ("ICO","ICO"),
+                #("ICO","ICO"),
                 ("PPM","PPM")]
         extensions = ["JPEG","GIF","PNG","TIFF","BMP","ICO","PPM"]
         self.rbextensions = []
         currow=6
         curcol=0
         x_place = 20
-        y_place = 40
+        y_place = 30
         for text,mode in MODES:
             self.rbextensions.append(Radiobutton(master=self.extensionsframe,text=text,variable=self.rbfileextensions_val,value=mode))
         for j in range(len(self.rbextensions)):
@@ -228,6 +236,9 @@ class MainWindow(Frame):
 
     def quitprogram(self):
         exit()
+    
+    def outputfolder(self):
+        self.outputpath = filedialog.askdirectory(initaldir=self.cacheddir)
 
     def selectfolder(self):
         self.filepath = filedialog.askdirectory(initialdir=self.cacheddir)

@@ -10,7 +10,7 @@ class Resize_options:
         self.ogsize     = ogsize
         self.multithreading = multithreading 
 
-def process(filepath,imgpaths,maxheight=-1,maxwidth=-1,preserveextensions=True,userextension=None,aspectratio=True,multithreading=False):
+def process(filepath,imgpaths,outputpath,maxheight=-1,maxwidth=-1,preserveextensions=True,userextension=None,aspectratio=True,multithreading=False):
     args = Resize_options()
     args.multithreading = multithreading
     image_height = image_width = 0.0
@@ -19,27 +19,22 @@ def process(filepath,imgpaths,maxheight=-1,maxwidth=-1,preserveextensions=True,u
         image = Image.open(imgpaths[i])
         target_height = target_width = 0
         image_width, image_height = image.size
-        currentformat = (image.format,userextension)[preserveextensions]
-        if(not maxheight == -1 and maxheight <= image_height):
+        args.extension = (image.format,userextension)[preserveextensions]
+        if(not maxheight == -1 and maxheight<=image_height):
             target_height = maxheight
-        elif(not maxheight == - 1 and maxheight>image_height):
+        elif(not maxheight == -1 and maxheight>image_height):
             target_height = image_height
         else:
-            target_height = 0 
-        if (not maxwidth == -1 and maxwidth <= image_width):
+            target_height = image_height#TODO THIS SECTION STINKS
+        if (not maxwidth == -1 and maxwidth<=image_width):
             target_width = maxwidth
         elif(not maxwidth == -1 and maxwidth>image_width):
             target_width = image_width    
         else:
-            target_width = 0 
+            target_width = image_width
         args.target_size = target_width,target_height
-        if(aspectratio):
-            args.aspectratio = image_width / image_height
-                
-        if(not preserveextensions):
-            args.extension = userextension
-        else:
-            args.extension = image.format
+        args.aspectratio = (image_width / image_height,target_width/target_height)[aspectratio]
+        
         print(f"imagepath{imgpaths[i]}")
         print(f"originalsize{image.size}")
         print(f"targetsize :{args.target_size}")
