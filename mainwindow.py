@@ -21,6 +21,7 @@ class MainWindow(Frame):
         self.bpad       = 10
         self.ilheight   = 10
         self.ilwidth    = 40
+        self.outputpath = None
         self.imglistselections = []
         self.cbfileextensions_preserve_val  = IntVar()
         self.rbfileextensions_val           = StringVar()
@@ -118,7 +119,7 @@ class MainWindow(Frame):
         now = datetime.now()
         current_time = time(now.hour,now.minute,now.second)
         dirname = str(datetime.combine(today,current_time))
-        outputpath = (self.outputpath,self.filepath)[self.outputpath is None]
+        outputpath = (self.outputpath,self.filepath)[self.outputpath == "" or self.outputpath is None]
         fcreated, message=oututil.createoutputdir(outputpath,dirname)
         if(not fcreated):
             print("Could not create output folder, reason: %s", message)
@@ -238,7 +239,7 @@ class MainWindow(Frame):
         exit()
     
     def outputfolder(self):
-        self.outputpath = filedialog.askdirectory(initaldir=self.cacheddir)
+        self.outputpath = filedialog.askdirectory(initialdir=self.cacheddir)
 
     def selectfolder(self):
         self.filepath = filedialog.askdirectory(initialdir=self.cacheddir)

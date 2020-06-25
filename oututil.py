@@ -13,5 +13,5 @@ def createoutputdir(path,dirname):
             return False, "Folder already exists"
         except OSError as err:
             if(err.errno == errno.EEXIST):
-                    return False, "FUCK"
+                    return False, "FUCK" #TODO change
     return True, None
