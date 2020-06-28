@@ -115,6 +115,8 @@ class MainWindow(Frame):
 
     #TODO make errorwindow descriptions     
     def startconversion(self):
+        if(self.filepath is None or self.filepath == ""):
+            return
         today = date.today()
         now = datetime.now()
         current_time = time(now.hour,now.minute,now.second)
@@ -242,10 +244,12 @@ class MainWindow(Frame):
         self.outputpath = filedialog.askdirectory(initialdir=self.cacheddir)
 
     def selectfolder(self):
-        self.filepath = filedialog.askdirectory(initialdir=self.cacheddir)
-        self.cacheddir = self.filepath
-        if(self.filepath):
-            self.readfiles()
+        temppath = filedialog.askdirectory(initialdir=self.cacheddir)
+        if(temppath and temppath != ""):
+            self.filepath = temppath
+            self.cacheddir = self.filepath
+            if(self.filepath and self.filepath != ""):
+                self.readfiles()
 
     def start_disableoptions(self):
         self.dg_selectallbtn.config(state="disabled")

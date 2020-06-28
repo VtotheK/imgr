@@ -18,28 +18,46 @@ def process(filepath,imgpaths,outputpath,maxheight,maxwidth,preserveextensions=T
     val_aspectratio = 0.0
     for i in range(len(imgpaths)):
         image = Image.open(imgpaths[i])
-        target_height = target_width = 0
         image_width, image_height = image.size
-        args.extension = (userextension,image.format)[preserveextensions]
-        print(f"preserveextensions {preserveextensions}")
-        if(not aspectratio):
-            if(maxheight > 0 and maxheight<=image_height):
-                target_height = maxheight
-            elif(maxheight > 0 and maxheight>image_height):
-                target_height = image_height
+        target_height       = target_width = 0
+        args.extension      = (userextension,image.format)[preserveextensions]
+        target_height       = get_targetsize(maxheight,image_height)
+        target_width        = get_targetsize(maxwidth,image_width)
+        args.aspectratio = (target_width/target_height,image_width/image_height)[aspectratio]
+        if(maxheight > 0):
+            maxheight = (maxheight,target_height)[maxheight==target_height]
+        if(maxwidth > 0):
+            maxwidth = (maxwidth,target_width)[maxwidth==target_width]
+        if(aspectratio):
+            if(maxheight > 0 and maxwidth > 0):
+                tempwidth = target_height * args.aspectratio
+                tempheight = tempwidth / args.aspectratio
+                if(tempwidth > target_width):
+                    target_height = target_width / args.aspectratio
+                    target_width = target_height * args.aspectratio
+                else:
+                    target_width = target_height * args.aspectratio
+                    target_height = target_width / args.aspectratio
+            elif(maxheight > 0 and maxwidth <= 0):
+                target_width = target_height * args.aspectratio
+            elif(maxheight <= 0 and maxwidth > 0):
+                target_height = target_width / args.aspectratio
             else:
-                target_height = image_height#TODO THIS SECTION STINKS
-            if (maxwidth > 0 and maxwidth<=image_width):
-                target_width = maxwidth
-            elif(maxwidth > 0 and maxwidth>image_width):
-                target_width = image_width    
-            else:
-                target_width = image_width
+                print(f"Can not calculate aspect ratio: maxheight:{maxheight} maxwidth:{maxwidth} target_height:{ target_height} target_width:{target_width}")
         args.target_size = target_width,target_height
-        args.aspectratio = (image_width / image_height,target_width/target_height)[aspectratio]
-         
         print(f"imagepath{imgpaths[i]}")
         print(f"originalsize{image.size}")
         print(f"targetsize :{args.target_size}")
         print(f"aspectratio:{args.aspectratio}")
         print(f"extension:{args.extension}\n")
+#LEVEYS = KORKEUS * ASPECTRATIO
+def get_targetsize(xy_target,xy_image):
+    target = 0;
+    if(xy_target > 0 and xy_target<=xy_image):
+        target = xy_target
+    elif(xy_target > 0 and xy_target>xy_image):
+        target = xy_image
+    else:
+        target = xy_image#TODO THIS SECTION STINKS
+    return target
+
