@@ -165,7 +165,7 @@ class MainWindow(Frame):
         for i in self.imglistselections:
             path = self.filepath + self.imgfilenames[i]
             fullpaths.append(path)
-        ip.process(self.filepath,fullpaths,outputpath,maxheight,maxwidth,preserveextensions,userextension,aspectratio,multithreading)
+        ip.process(self.master,self.filepath,fullpaths,outputpath,maxheight,maxwidth,preserveextensions,userextension,aspectratio,multithreading)
 
     def rb_fileextensions(self):
         MODES = [("JPEG","JPEG"),

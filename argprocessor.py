@@ -1,5 +1,5 @@
 from PIL import Image
-
+import processwindow as pw
 
 class Resize_options:
     def __init__ (self,aspectratio=0,target_size=(),ogsize=(),extension=None,outputpath=None,multithreading=False):
@@ -10,8 +10,9 @@ class Resize_options:
         self.ogsize     = ogsize
         self.multithreading = multithreading 
 
-def process(filepath,imgpaths,outputpath,maxheight,maxwidth,preserveextensions=True,userextension=None,aspectratio=True,multithreading=False):
+def process(root,filepath,imgpaths,outputpath,maxheight,maxwidth,preserveextensions=True,userextension=None,aspectratio=True,multithreading=False):
     print(f"MH:{maxheight} MW:{maxwidth}")
+    master = root
     args = Resize_options()
     args.multithreading = multithreading
     image_height = image_width = 0.0
@@ -45,6 +46,7 @@ def process(filepath,imgpaths,outputpath,maxheight,maxwidth,preserveextensions=T
             else:
                 print(f"Can not calculate aspect ratio: maxheight:{maxheight} maxwidth:{maxwidth} target_height:{ target_height} target_width:{target_width}")
         args.target_size = target_width,target_height
+        process = pw.ProcessWindow(root=master,filecount=10,width=100,height=200,title="Is this working")
         print(f"imagepath{imgpaths[i]}")
         print(f"originalsize{image.size}")
         print(f"targetsize :{args.target_size}")
