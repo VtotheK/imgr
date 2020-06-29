@@ -46,12 +46,12 @@ def process(root,filepath,imgpaths,outputpath,maxheight,maxwidth,preserveextensi
             else:
                 print(f"Can not calculate aspect ratio: maxheight:{maxheight} maxwidth:{maxwidth} target_height:{ target_height} target_width:{target_width}")
         args.target_size = target_width,target_height
-        process = pw.ProcessWindow(root=master,filecount=10,width=100,height=200,title="Is this working")
         print(f"imagepath{imgpaths[i]}")
         print(f"originalsize{image.size}")
         print(f"targetsize :{args.target_size}")
         print(f"aspectratio:{args.aspectratio}")
         print(f"extension:{args.extension}\n")
+    process = pw.ProcessWindow(root=master,title="Is this working",filecount=10,width=650,height=200)
 #LEVEYS = KORKEUS * ASPECTRATIO
 def get_targetsize(xy_target,xy_image):
     target = 0;
