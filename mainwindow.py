@@ -222,13 +222,13 @@ class MainWindow(Frame):
 
     def readfiles(self):
         if(self.subfoldervar.get() == 1):
-            self.imgfilenames,self.nonimgfiles,self.imgfiles = irutil.getfiles(self.filepath,subfolders=True)
+            self.imgfilenames,self.nonimgfiles = irutil.getfiles(self.filepath,subfolders=True)
         else:
-            self.imgfilenames,self.nonimgfiles,self.imgfiles = irutil.getfiles(self.filepath,subfolders=False)
+            self.imgfilenames,self.nonimgfiles = irutil.getfiles(self.filepath,subfolders=False)
         if(self.imglist.size() > 0 or self.nonimglist.size() > 0):
             self.imglist.delete(0,END)
             self.nonimglist.delete(0,END)
-        for i in range(len(self.imgfiles)):
+        for i in range(len(self.imgfilenames)):
             self.imglist.insert(END,self.imgfilenames[i])
         for j in range(len(self.nonimgfiles)):
             self.nonimglist.insert(END,self.nonimgfiles[j])

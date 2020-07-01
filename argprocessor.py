@@ -13,11 +13,11 @@ class Resize_options:
 def process(root,filepath,imgpaths,outputpath,maxheight,maxwidth,preserveextensions=True,userextension=None,aspectratio=True,multithreading=False):
     print(f"MH:{maxheight} MW:{maxwidth}")
     master = root
-    arg = Resize_options()
     args = deque()
     image_height = image_width = 0.0
     val_aspectratio = 0.0
     for i in range(len(imgpaths)):
+        arg = Resize_options()
         image = Image.open(imgpaths[i])
         image_width, image_height = image.size
         arg.imgpath         = imgpaths[i]
@@ -48,6 +48,8 @@ def process(root,filepath,imgpaths,outputpath,maxheight,maxwidth,preserveextensi
                 target_height = target_width / arg.aspectratio
             else:
                 print(f"Can not calculate aspect ratio: maxheight:{maxheight} maxwidth:{maxwidth} target_height:{ target_height} target_width:{target_width}")
+        target_width = int(target_width)
+        target_height= int(target_height)
         arg.target_size = target_width,target_height
         args.append(arg)
         """

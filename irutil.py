@@ -8,7 +8,6 @@ def getfiles(path,subfolders=False):
         return
     filespath = []
     nonimagelist = []
-    imgfiles = []
     fname = ""
     if(subfolders):
         for root, dirs, files in os.walk(path,topdown=False):
@@ -18,7 +17,6 @@ def getfiles(path,subfolders=False):
                     img = Image.open(fname)
                     if(img):
                         filespath.append(imgpathstr(fname,path,img))
-                        imgfiles.append(img)
                 except (IOError,ValueError) as e:
                     fname = fname.replace(path,'')
                     nonimagelist.append(fname)
@@ -31,13 +29,12 @@ def getfiles(path,subfolders=False):
                             img = Image.open(fname)
                             if(img):
                                 filespath.append(imgpathstr(fname,path,img))
-                                imgfiles.append(img)
                         except (IOError,ValueError) as e:
                             fname = fname.replace(path,'')
                             nonimagelist.append(fname)
         except FileNotFoundError:
             filespath.append("Folder not found")
-    return filespath,nonimagelist,imgfiles
+    return filespath,nonimagelist
 
 
 def imgpathstr(fname,path,img):
