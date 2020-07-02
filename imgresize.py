@@ -1,3 +1,4 @@
+import _thread
 import threading
 import time
 import PIL
@@ -17,12 +18,12 @@ class IMGResize(threading.Thread):
     def run(self):
         print(f"THREADS:{threading.activeCount()}")
         time.sleep(3)
-        currentthreads = []
+        self.currentthreads = []
         allthreads = []
         max_threads = 5
         if(self.multithreading):
             while(len(self.args) > 0):
-                if(len(currentthreads) < max_threads):
+                if(len(self.currentthreads) < max_threads):
                     for i in range(max_threads - threading.activeCount()):
                         if(len(self.args) > 0):
                             try:
@@ -30,15 +31,17 @@ class IMGResize(threading.Thread):
                             except IndexError:
                                 print("Tried to pop image from empty arg-queue")
                                 return False #TODO handle this return somehow
-                            thread = threading.Thread(target=resize, args=(arg,True))
-                            allthreads.append(thread)
+                            #thread = threading.Thread(target=self.resize, args=(arg,True)).run()
+                            t = _thread.start_new_thread(self.resize,(arg,True,))
+                            print("THREAD APPENDING")
+                            allthreads.append(t)
                         #else:
                           #  for i in range(len(allthreads)):
                            #     allthreads[i].join
                 else:
                     time.sleep(0.4)
-            for i in range(len(allthreads)):
-                allthreads[i].join()
+            #for i in range(len(allthreads)):
+               # allthreads[i].join()
         else:
             for i in range(len(self.args)):
                 arg = self.args[i]
@@ -47,8 +50,8 @@ class IMGResize(threading.Thread):
     def resize(self,arg,multithreading):
        global num  
        if(multithreading):
-            tid = thread.get_ident()
-            currentthreads.append(tid)
+            tid = threading.get_ident()
+            self.currentthreads.append(tid)
             print(f"THREAD:{threading.current_thread().ident} starting to work")
        img = Image.open(arg.imgpath)
        print(f"Resizing:{arg.imgpath}")
@@ -59,5 +62,5 @@ class IMGResize(threading.Thread):
        print("Image resized")
        if(multithreading):
             print(f"THREAD:{threading.current_thread().ident} stopping")
-            tid = thread.get_ident()
-            currentthreads.remove(tid)
+            tid = threading.get_ident()
+            self.currentthreads.remove(tid)
