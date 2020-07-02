@@ -48,8 +48,11 @@ class ProcessWindow(Frame):
             self.indicatorthreshold = 1
         else:
             self.indicatorthreshold = len(self.args) / 10
-        threading.Thread(target=imgresize.resizeimages(self.args,self.multithreading,self.indicatorthreshold,self.processindicators))
-            
+        obj = imgresize.IMGResize(self.args,self.multithreading,self.indicatorthreshold,self.processindicators).start()
+        self.processwindow.after(100,self.testy)
+
+    def testy(self):
+        print("TESTINNNGGG")
 
     def cancelordone(self):
         if(self.processing):
