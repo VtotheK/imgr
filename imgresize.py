@@ -2,19 +2,24 @@ import _thread
 import threading
 import time
 import PIL
+from tkinter import * 
 from PIL import Image
 from collections import deque
 
-num = 1 #TODO change this to filename, remember all PIL.Image objects wont have filename property
 
 class IMGResize(threading.Thread):
-    def __init__(self,args,multithreading,indicatorthreshold,processindicators):
+    def __init__(self,sender,args,multithreading,indicatorthreshold,processindicators):
         threading.Thread.__init__(self)
+        self.num = 0 #TODO temporary iterable filename
+        self.sender = sender
+        self.cresized = 0
+        self.indicatorthreshold = indicatorthreshold
+        self.processindicators = processindicators
         self.args = args
         self.multithreading = multithreading
         self.indicatorthreshold = indicatorthreshold
         self.processindicators = processindicators 
-    
+
     def run(self):
         print(f"THREADS:{threading.activeCount()}")
         time.sleep(3)
@@ -33,12 +38,14 @@ class IMGResize(threading.Thread):
                                 return False #TODO handle this return somehow
                             #thread = threading.Thread(target=self.resize, args=(arg,True)).run()
                             t = _thread.start_new_thread(self.resize,(arg,True,))
-                            print("THREAD APPENDING")
+                            print("THREAD SPAWNED")
                             allthreads.append(t)
-                        #else:
-                          #  for i in range(len(allthreads)):
-                           #     allthreads[i].join
+                        else:
+                            for i in range(len(allthreads)):
+                                allthreads[i].join
+                                print(f("THREAD:{allthreads[i]} joined"))
                 else:
+                    print("RESIZE MAIN-THREAD SLEEPING")
                     time.sleep(0.4)
             #for i in range(len(allthreads)):
                # allthreads[i].join()
@@ -46,21 +53,38 @@ class IMGResize(threading.Thread):
             for i in range(len(self.args)):
                 arg = self.args[i]
                 self.resize(arg,False)
+            if(len(self.processindicators) > 0):
+                while(len(self.processindicators) > 0):
+                    self.processindicators.popleft().config(bg="green")
+                self.sender.resizedone()
 
     def resize(self,arg,multithreading):
-       global num  
-       if(multithreading):
+
+        if(multithreading):
             tid = threading.get_ident()
             self.currentthreads.append(tid)
-            print(f"THREAD:{threading.current_thread().ident} starting to work")
-       img = Image.open(arg.imgpath)
-       print(f"Resizing:{arg.imgpath}")
-       img = img.resize(arg.target_size,PIL.Image.LANCZOS)
-       out = arg.outputpath + "/" + str(num)
-       num = num + 1
-       img.save(out,arg.extension)
-       print("Image resized")
-       if(multithreading):
-            print(f"THREAD:{threading.current_thread().ident} stopping")
+            print(f"THREAD:{threading.current_thread().ident} -> starting to work")
+        try:
+            self.sender.currentlyresizing(arg.imgpath)
+            img = Image.open(arg.imgpath) 
+            print(f"THREAD:{threading.current_thread().ident} -> Resizing:{arg.imgpath}")
+            img = img.resize(arg.target_size,PIL.Image.LANCZOS)
+            out = arg.outputpath + "/" + str(self.num)
+            img.save(out,arg.extension)
+            self.num = self.num + 1
+        except (OSError,KeyError,ValueError) as e: #TODO too many exceptions, must parse input files more carefully, remove when implemented
+            print("Could not resize image file, unsupported file type")
+        finally:
+            self.cresized = self.cresized + 1
+            if(self.cresized > self.indicatorthreshold):
+                try:
+                    ind = self.processindicators.popleft()
+                    ind.config(bg="green")
+                    self.cresized = 0
+                except IndexError:
+                    print("Tried to pop from empty queue")
+        print(f"THREAD:{threading.current_thread().ident} -> Image resized")
+        if(multithreading):
+            print(f"THREAD:{threading.current_thread().ident} -> stopping")
             tid = threading.get_ident()
             self.currentthreads.remove(tid)

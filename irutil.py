@@ -6,6 +6,7 @@ from PIL import Image, ExifTags
 def getfiles(path,subfolders=False):
     if(path==None):
         return
+    FORMATS = ["JPEG","PNG","BMP","GIF","TIFF","PPM"]
     filespath = []
     nonimagelist = []
     fname = ""
@@ -15,8 +16,11 @@ def getfiles(path,subfolders=False):
                 try:
                     fname = os.path.join(root,name)
                     img = Image.open(fname)
-                    if(img):
+                     
+                    if (any(img.format == f for f in FORMATS)):
                         filespath.append(imgpathstr(fname,path,img))
+                    else:
+                        nonimagelist.append(imgpathstr(fname,path,img))
                 except (IOError,ValueError) as e:
                     fname = fname.replace(path,'')
                     nonimagelist.append(fname)

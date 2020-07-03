@@ -117,14 +117,14 @@ class MainWindow(Frame):
     def startconversion(self):
         if(self.filepath is None or self.filepath == ""):
             return
-        today = date.today()
-        now = datetime.now()
-        current_time = time(now.hour,now.minute,now.second)
-        dirname = str(datetime.combine(today,current_time))
-        outputpath = (self.outputpath,self.filepath)[self.outputpath == "" or self.outputpath is None]
-        fcreated, message=oututil.createoutputdir(outputpath,dirname)
+        today               = date.today()
+        now                 = datetime.now()
+        current_time        = time(now.hour,now.minute,now.second)
+        dirname             = str(datetime.combine(today,current_time))
+        outputpath          = (self.outputpath,self.filepath)[self.outputpath == "" or self.outputpath is None]
+        fcreated, message   = oututil.createoutputdir(outputpath,dirname)
         if(not fcreated):
-            print("Could not create output folder, reason: %s", message)
+            print(f"Could not create output folder, reason: {message}")
             exit()
         height = width = aspectratio = multithreading = preserve_extensions =  False
         userextension = None
@@ -136,6 +136,7 @@ class MainWindow(Frame):
             errorwindow.ErrorWindow(root=self.master,title="No images loaded")
             return
         elif(len(self.imglistselections) < 1):
+            print(self.imglistselections)
             errorwindow.ErrorWindow(root=self.master,title="No images selected")
             return
         elif(self.val_ckbtn_maxheight.get() == 0 and self.val_ckbtn_maxwidth.get() == 0):
@@ -216,9 +217,11 @@ class MainWindow(Frame):
 
     def imgselection(self,event):
         self.imglistselections = event.widget.curselection()
+        print(self.imglistselections)
 
     def selectallimgs(self):
         self.imglist.select_set(0,END)
+        self.imglist.event_generate("<<ListboxSelect>>")
 
     def readfiles(self):
         if(self.subfoldervar.get() == 1):
