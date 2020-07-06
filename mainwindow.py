@@ -117,6 +117,7 @@ class MainWindow(Frame):
     def startconversion(self):
         if(self.filepath is None or self.filepath == ""):
             return
+        args = {}
         today               = date.today()
         now                 = datetime.now()
         current_time        = time(now.hour,now.minute,now.second)
@@ -126,9 +127,10 @@ class MainWindow(Frame):
         if(not fcreated):
             print(f"Could not create output folder, reason: {message}")
             exit()
-        height = width = aspectratio = multithreading = preserve_extensions =  False
+        #aspectratio = multithreading = preserve_extensions =  False
         userextension = None
-        maxheight=maxwidth=0
+        args["maxheight"] = 0
+        args["maxwidth"]  = 0
         if(not self.filepath):
             errorwindow.ErrorWindow(root=self.master, title="No destination folder specified")
             return
@@ -147,26 +149,27 @@ class MainWindow(Frame):
             if(not irutil.isnumber(h)):
                 errorwindow.ErrorWindow(root=self.master,title="Max height not a number")
                 return
-            height = True
-            maxheight=int(h)
+            args["maxheight"] = int(h)
         if(self.val_ckbtn_maxwidth.get() == 1 ):
             w = self.ent_maxwidth.get()
             if(not irutil.isnumber(w)):
                 errorwindow.ErrorWindow(root=self.master,title="Max width not a number")
                 return
-            width = True
-            maxwidth=int(w)
-        aspectratio         = (False,True)[self.val_ckbtn_aspectratio.get() == 1]
-        preserveextensions  = (False,True)[self.cbfileextensions_preserve_val.get() == 1]
-        multithreading      = (False,True)[self.val_multithreading.get() == 1] 
-        extensions = []
-        if(not preserveextensions):
-            userextension = self.rbfileextensions_val.get() 
+            args["maxwidth"] = int(w)
+        args["aspectratio"] = (False,True)[self.val_ckbtn_aspectratio.get() == 1]
+        args["preserveextensions"]  = (False,True)[self.cbfileextensions_preserve_val.get() == 1]
+        args["multithreading"]      = (False,True)[self.val_multithreading.get() == 1] 
+        print(args["multithreading"])
+        #args["extensions"] = []
+        if(not args["preserveextensions"]):
+            args["userextension"] = self.rbfileextensions_val.get() 
+        else:
+            args["userextension"] = None
         fullpaths = []
         for i in self.imglistselections:
             path = self.filepath + self.imgfilenames[i]
             fullpaths.append(path)
-        ip.process(self.master,self.filepath,fullpaths,outputpath,maxheight,maxwidth,preserveextensions,userextension,aspectratio,multithreading)
+        ip.process(self.master,self.filepath,fullpaths,outputpath,args)
 
     def rb_fileextensions(self):
         MODES = [("JPEG","JPEG"),
@@ -182,6 +185,7 @@ class MainWindow(Frame):
         curcol=0
         x_place = 20
         y_place = 30
+        #make buttons for available extensions
         for text,mode in MODES:
             self.rbextensions.append(Radiobutton(master=self.extensionsframe,text=text,variable=self.rbfileextensions_val,value=mode))
         for j in range(len(self.rbextensions)):

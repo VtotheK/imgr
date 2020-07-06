@@ -2,6 +2,8 @@ import processwindow as pw
 from collections import deque
 from PIL import Image
 
+
+#arg-object to pass on to imageresizing module
 class Resize_options:
     def __init__ (self,aspectratio=0,target_size=(),ogsize=(),extension=None,imgpath=None,outputpath=None,multithreading=False):
         self.aspectratio= aspectratio
@@ -10,29 +12,39 @@ class Resize_options:
         self.outputpath = outputpath
         self.ogsize     = ogsize
         self.imgpath    = imgpath
-def process(root,filepath,imgpaths,outputpath,maxheight,maxwidth,preserveextensions=True,userextension=None,aspectratio=True,multithreading=False):
-    print(f"MH:{maxheight} MW:{maxwidth}")
+
+def process(root,filepath,imgpaths,outputpath,gui_args):
+    #print(f"MH:{gui_args["maxheight"]} MW:{giu_args["maxwidth"]}")
+    print(gui_args)
     master = root
     args = deque()
     image_height = image_width = 0.0
     val_aspectratio = 0.0
+
+    #parse gui arguments in to arg object
     for i in range(len(imgpaths)):
         arg = Resize_options()
         image = Image.open(imgpaths[i])
         image_width, image_height = image.size
         arg.imgpath         = imgpaths[i]
         target_height       = target_width = 0
-        arg.extension       = (userextension,image.format)[preserveextensions]
+        arg.extension       = (gui_args["userextension"],image.format)[gui_args["preserveextensions"]]
         arg.outputpath      = outputpath
-        target_height       = get_targetsize(maxheight,image_height)
-        target_width        = get_targetsize(maxwidth,image_width)
-        arg.aspectratio     = (target_width/target_height,image_width/image_height)[aspectratio]
+        target_height       = get_targetsize(gui_args["maxheight"],image_height)
+        target_width        = get_targetsize(gui_args["maxwidth"],image_width)
+        arg.aspectratio     = (target_width/target_height,image_width/image_height)[gui_args["aspectratio"]]
+        arg.multithreading  = (False,True)[gui_args["multithreading"]]
         
-        if(maxheight > 0):
-            maxheight = (maxheight,target_height)[maxheight==target_height]
-        if(maxwidth > 0):
-            maxwidth = (maxwidth,target_width)[maxwidth==target_width]
-        if(aspectratio):
+        #is max height/width defined in GUI?
+        if(gui_args["maxheight"] > 0):
+            maxheight = (gui_args["maxheight"],target_height)[gui_args["maxheight"]==target_height]
+        if(gui_args["maxwidth"] > 0):
+            maxwidth = (gui_args["maxwidth"],target_width)[gui_args["maxwidth"]==target_width]
+        
+        #is aspectratio defined in GUI
+        if(gui_args["aspectratio"]):
+            #is height larger than defined max height when image is resized by max width
+            #if true, then resize height first, then width, so target_height <= maxheigt and vice versa
             if(maxheight > 0 and maxwidth > 0):
                 tempwidth = target_height * arg.aspectratio
                 tempheight = tempwidth / arg.aspectratio
@@ -59,7 +71,7 @@ def process(root,filepath,imgpaths,outputpath,maxheight,maxwidth,preserveextensi
         print(f"aspectratio:{args.aspectratio}")
         print(f"extension:{args.extension}\n")
         """
-    process = pw.ProcessWindow(master,args,multithreading,False)
+    process = pw.ProcessWindow(master,args,gui_args["multithreading"],False)
 #LEVEYS = KORKEUS * ASPECTRATIO
 def get_targetsize(xy_target,xy_image):
     target = 0;
