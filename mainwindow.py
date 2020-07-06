@@ -123,7 +123,7 @@ class MainWindow(Frame):
         current_time        = time(now.hour,now.minute,now.second)
         dirname             = str(datetime.combine(today,current_time))
         outputpath          = (self.outputpath,self.filepath)[self.outputpath == "" or self.outputpath is None]
-        fcreated, message   = oututil.createoutputdir(outputpath,dirname)
+        fcreated, message, outfolder = oututil.createoutputdir(outputpath,dirname)
         if(not fcreated):
             print(f"Could not create output folder, reason: {message}")
             exit()
@@ -159,7 +159,6 @@ class MainWindow(Frame):
         args["aspectratio"] = (False,True)[self.val_ckbtn_aspectratio.get() == 1]
         args["preserveextensions"]  = (False,True)[self.cbfileextensions_preserve_val.get() == 1]
         args["multithreading"]      = (False,True)[self.val_multithreading.get() == 1] 
-        print(args["multithreading"])
         #args["extensions"] = []
         if(not args["preserveextensions"]):
             args["userextension"] = self.rbfileextensions_val.get() 
@@ -169,7 +168,8 @@ class MainWindow(Frame):
         for i in self.imglistselections:
             path = self.filepath + self.imgfilenames[i]
             fullpaths.append(path)
-        ip.process(self.master,self.filepath,fullpaths,outputpath,args)
+        ip.process(self.master,self.filepath,fullpaths,outfolder,args)
+        
 
     def rb_fileextensions(self):
         MODES = [("JPEG","JPEG"),

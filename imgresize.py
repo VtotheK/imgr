@@ -2,6 +2,7 @@ import _thread
 import threading
 import time
 import PIL
+import os
 from tkinter import * 
 from PIL import Image
 from collections import deque
@@ -10,7 +11,6 @@ from collections import deque
 class IMGResize(threading.Thread):
     def __init__(self,sender,args,multithreading,indicatorthreshold,processindicators):
         threading.Thread.__init__(self)
-        self.num = 0 #TODO temporary iterable filename
         self.sender = sender
         self.cresized = 0
         self.indicatorthreshold = indicatorthreshold
@@ -67,11 +67,12 @@ class IMGResize(threading.Thread):
         try:
             self.sender.currentlyresizing(arg.imgpath)
             img = Image.open(arg.imgpath) 
+            filename = os.path.basename(arg.imgpath)
             print(f"THREAD:{threading.current_thread().ident} -> Resizing:{arg.imgpath}")
             img = img.resize(arg.target_size,PIL.Image.LANCZOS)
-            out = arg.outputpath + "/" + str(self.num)
+            out = arg.outputpath + "/" + filename
+            print(f"THREAD:{threading.current_thread().ident} -> Saving: {out}")
             img.save(out,arg.extension)
-            self.num = self.num + 1
         except (OSError,KeyError,ValueError) as e: #TODO too many exceptions, must parse input files more carefully, remove when implemented
             print("Could not resize image file, unsupported file type")
         finally:

@@ -18,26 +18,29 @@ class ProcessWindow(Frame):
         if(debug):
             self.processwindow = Frame.__init__(self,root)
             self.master = root 
+            self.window_layout()
         else:
             self.processwindow= tk.Toplevel(root)
             #self.processwindow.geometry(str(self.width) + "x" + str(self.height))
-        self.processedfiles = 0 
+            self.processedfiles = 0 
+            self.window_layout()
+            self.processimages()
         #self.master.title("Converting images")
-        self.window_layout()
-        self.processimages()
 
     def window_layout(self):
         self.processing = True
-        self.processframe = tk.Frame(master=self.processwindow,width=640,height=30)
-        self.processframe.grid(row=0,column=0,columnspan=10,rowspan=3)
+        self.processframe = tk.Frame(master=self.processwindow)
+        self.processframe.grid(row=0,column=0,columnspan=10,rowspan=2)
+        self.imagetextframe = tk.Frame(master=self.processwindow,border=1)
+        self.imagetextframe.grid(row=2,column=0,columnspan=10,rowspan=3)
         self.processindicators = deque() 
         self.label_process = Label(master=self.processframe,text="Converting images")
         self.label_process.grid(row=1,column=3,columnspan=5)
-        self.label_rsztext = Label(master=self.processframe,text="Resizing:")
-        self.label_rsztext.grid(row=2,column=0,columnspan=3)
-        self.label_processedimg = Label(master=self.processframe,text="SomeCurrentImage.jpg",font="TkDefaultFont 10 bold",relief=GROOVE)
-        self.label_processedimg.grid(row=2,column=3,columnspan=15,sticky="w")
-        self.btn_quit = Button(master=self.processframe, text="Cancel",command=self.cancelordone)
+        self.label_rsztext = Label(master=self.imagetextframe,text="Resizing:")
+        self.label_rsztext.grid(row=3,column=0,sticky="w",columnspan=1)
+        self.label_processedimg = Label(master=self.imagetextframe,text="SomeCurrentImage.jpg",font="TkDefaultFont 10 bold",relief=GROOVE,height=1,width=20)
+        self.label_processedimg.grid(row=3,column=1,sticky="w")
+        self.btn_quit = Button(master=self.imagetextframe, text="Cancel",command=self.cancelordone)
         self.btn_quit.grid(row=3,column=7,columnspan=3,sticky="e",pady=5)
         for i in range(10):
             self.processindicators.append(tk.Canvas(master=self.processframe,border=3,relief=GROOVE,height=25,width=25,bg="red"))
@@ -92,5 +95,5 @@ class ProcessWindow(Frame):
 
 if(__name__=="__main__"):
     top = Tk()
-    process = ProcessWindow(top,None,10,None,debug=True)
+    process = ProcessWindow(top,None,multithreading=False,debug=True)
     top.mainloop()

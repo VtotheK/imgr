@@ -15,13 +15,13 @@ def getfiles(path,subfolders=False):
             for name in files:
                 try:
                     fname = os.path.join(root,name)
+                    print(f"reading:{fname}")
                     img = Image.open(fname)
-                     
                     if (any(img.format == f for f in FORMATS)):
                         filespath.append(imgpathstr(fname,path,img))
                     else:
                         nonimagelist.append(imgpathstr(fname,path,img))
-                except (IOError,ValueError) as e:
+                except (IOError,ValueError,RuntimeError) as e:
                     fname = fname.replace(path,'')
                     nonimagelist.append(fname)
     else:
