@@ -71,7 +71,15 @@ class IMGResize(threading.Thread):
         try:
             self.sender.currentlyresizing(arg.imgpath)
             img = Image.open(arg.imgpath) 
+            ext = img.format
             filename = os.path.basename(arg.imgpath)
+            fsplit = filename.split(".")
+            if(len(fsplit)>0):
+                if(fsplit[-1] == ext.lower()):
+                    print(f"{filename} had a file extension in it's name, erasing")
+                    filename = (str(time.time()),filename[0:len(filename) - len(fsplit[-1]) - 1])[len(filename) - len(fsplit) > 0]
+                    
+                    #filename = filename[0:len(filename) - len(fsplit)]
             print(f"THREAD:{threading.current_thread().ident} -> Resizing:{arg.imgpath}")
             img = img.resize(arg.target_size,PIL.Image.LANCZOS)
             out = arg.outputpath + "/" + filename

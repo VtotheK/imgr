@@ -28,7 +28,6 @@ class ProcessWindow(Frame):
         #self.master.title("Converting images")
 
     def window_layout(self):
-        self.processing = True
         self.processframe = tk.Frame(master=self.processwindow)
         self.processframe.grid(row=0,column=0,columnspan=10,rowspan=2)
         self.imagetextframe = tk.Frame(master=self.processwindow,border=1)
@@ -45,9 +44,6 @@ class ProcessWindow(Frame):
         for i in range(10):
             self.processindicators.append(tk.Canvas(master=self.processframe,border=3,relief=GROOVE,height=25,width=25,bg="red"))
             self.processindicators[i].grid(row=1,column=i)
-        #DEBUGGING
-        #_thread.start_new_thread(self.threadtest,(self.processindicators,1,))
-        #_thread.start_new_thread(self.conv_animation,(self.label_process,))
     
     def resizedone(self):
         self.processing = False
@@ -61,15 +57,14 @@ class ProcessWindow(Frame):
         else:
             self.indicatorthreshold = len(self.args) / 10
         obj = imgresize.IMGResize(self,self.args,self.multithreading,self.indicatorthreshold,self.processindicators).start()
+        self.processing = True
         _thread.start_new_thread(self.conv_animation,())
-    def testy(self):
-        print("TESTINNNGGG")
 
     def cancelordone(self):
         if(self.processing):
-            exit()
+            self.processwindow.destroy()
         else:
-            exit()#TODO do i need to cancel threads 
+            self.processwindow.destroy() 
     
     def conv_animation(self):
         dotcount = 0
