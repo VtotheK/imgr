@@ -26,6 +26,7 @@ class IMGResize(threading.Thread):
         self.currentthreads = []
         allthreads = []
         max_threads = 5
+        start_time = time.time()
         if(self.multithreading):
             while(len(self.args) > 0):
                 if(len(self.currentthreads) < max_threads):
@@ -36,10 +37,11 @@ class IMGResize(threading.Thread):
                             except IndexError:
                                 print("Tried to pop image from empty arg-queue")
                                 return False #TODO handle this return somehow
-                            #thread = threading.Thread(target=self.resize, args=(arg,True)).run()
-                            t = _thread.start_new_thread(self.resize,(arg,True,))
+                            thread = threading.Thread(target=self.resize, args=(arg,True))
+                            thread.start()
+                            #t = _thread.start_new_thread(self.resize,(arg,True,))
                             print("THREAD SPAWNED")
-                            allthreads.append(t)
+                            allthreads.append(thread)
                         else:
                             for i in range(len(allthreads)):
                                 allthreads[i].join
@@ -47,16 +49,18 @@ class IMGResize(threading.Thread):
                 else:
                     print("RESIZE MAIN-THREAD SLEEPING")
                     time.sleep(0.4)
-            #for i in range(len(allthreads)):
-               # allthreads[i].join()
+            for i in range(len(allthreads)):
+                allthreads[i].join()
         else:
             for i in range(len(self.args)):
                 arg = self.args[i]
                 self.resize(arg,False)
-            if(len(self.processindicators) > 0):
-                while(len(self.processindicators) > 0):
-                    self.processindicators.popleft().config(bg="green")
-                self.sender.resizedone()
+        if(len(self.processindicators) > 0):
+            while(len(self.processindicators) > 0):
+                self.processindicators.popleft().config(bg="green")
+        self.sender.resizedone()
+        end_time = time.time()
+        print(f"Total time: {round(end_time-start_time,2)} seconds")
 
     def resize(self,arg,multithreading):
 
