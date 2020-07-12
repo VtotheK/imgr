@@ -19,7 +19,8 @@ class MainWindow(Frame):
         self.lbxpad     = 10
         self.lbypad     = 20
         self.bpad       = 10
-        self.ilheight   = 10
+        self.ilheight   = 16
+        self.noilheight = 5
         self.ilwidth    = 40
         self.outputpath = None
         self.imglistselections = []
@@ -38,13 +39,15 @@ class MainWindow(Frame):
         self.imagesizeoptionsframe  = Frame(master=self,border=1,relief=GROOVE)
         self.imgtextframe           = Frame(master=self,border=1,relief=GROOVE)
         self.extensionsframe        = Frame(master=self,border=1,relief=GROOVE)
+        self.quitbtnframe           = Frame(master=self,border=1,relief=GROOVE)
 
         self.imgtextframe.grid(row=0,column=15,rowspan=15, columnspan=15,sticky="nse")
         self.selectfolderframe.grid(row=0,column=0,rowspan=2, columnspan=15,sticky="nswe")
         self.outputfolderframe.grid(row=2,column=0,rowspan=2,columnspan=15,sticky="nswe")
-        self.qualityframe.grid(row=3,column=0,rowspan=3,columnspan=15,sticky="nwse")
-        self.extensionsframe.grid(row=6,column=0,rowspan=5,columnspan=15,sticky="nwse")
-        self.imagesizeoptionsframe.grid(row=11,column=0, rowspan=6,columnspan=15,sticky="nwse")
+        self.qualityframe.grid(row=4,column=0,rowspan=3,columnspan=15,sticky="nwse")
+        self.extensionsframe.grid(row=7,column=0,rowspan=5,columnspan=15,sticky="nwse")
+        self.imagesizeoptionsframe.grid(row=12,column=0, rowspan=6,columnspan=15,sticky="nwse")
+        self.quitbtnframe.grid(row=15,column=15,rowspan=2,columnspan=15,sticky="ew")
 
         self.pack(fill=BOTH,expand=1)
         self.layout_imglistbox()
@@ -58,31 +61,32 @@ class MainWindow(Frame):
         self.rb_fileextensions()
         self.imglist.bind("<<ListboxSelect>>", self.imgselection)
 
-        quitButton = Button(master=self,text="Quit",command=self.quitprogram,height=1)
-        quitButton.grid(row=15,column=29,sticky="ne",pady=28)
+        self.quitButton = Button(master=self,text="Quit",command=self.quitprogram,height=1)
+        self.quitButton.grid(row=15,column=29,columnspan=15,sticky="ne")
 
         self.start_disableoptions() 
 
     def layout_noimglistbox(self):
-        self.nonimglist = Listbox(master=self.imgtextframe,height = self.ilheight, width=self.ilwidth)
+        self.nonimglist = Listbox(master=self.imgtextframe,height = self.noilheight, width=self.ilwidth)
         self.nonimglistscrollbar = Scrollbar(master=self.imgtextframe, orient=VERTICAL)
         self.nonimglist.config(yscrollcommand=self.nonimglistscrollbar.set)
         self.nonimglistscrollbar.config(command=self.nonimglist.yview)
-        self.nonimglistscrollbar.grid(row=4,column=1,sticky="nse")
-        self.nonimglist.grid(row=4,column=1,padx = self.lbxpad)
-        self.noimglabel = Label(master=self.imgtextframe, text="Not supported files").grid(row=3,column=1,sticky="n")
+        self.nonimglistscrollbar.grid(row=5,column=0,sticky="nse")
+        self.nonimglist.grid(row=5,column=0,padx = self.lbxpad)
+        self.noimglabel = Label(master=self.imgtextframe, text="Not supported files").grid(row=4,column=0,sticky="n")
 
     def layout_outputfolderselection(self):
+        self.lbl_outputpath = Label(master=self.outputfolderframe, text="Path:")
         self.ckbtn_outputfolder = Button(master=self.outputfolderframe,text="Output folder",command=self.outputfolder)
-        self.ckbtn_outputfolder.grid(row=2,column=0)
-        self.ckbtn_outputfolder.place(relx=0.5,rely=0.25,anchor=CENTER)
-
+        self.ckbtn_outputfolder.grid(row=3,column=0,padx=30)
+        #self.ckbtn_outputfolder.place(relx=0.5,rely=0.25,anchor=CENTER)
+        self.lbl_outputpath.grid(row=4,column=0,sticky="w")
 
     def layout_fileselection(self):
         self.ckbtn_filebtn      =Button(master=self.selectfolderframe,text="Input folder",command=self.selectfolder)
         self.ckbtn_subfolders   =Checkbutton(master=self.selectfolderframe,text="Subfolders",variable=self.subfoldervar).grid(row=1,column=0)
         self.dg_selectallbtn    =Button(master=self.imgtextframe, text="Select all",command=self.selectallimgs,bg="white")
-        self.dg_selectallbtn.grid(row=0,column=1, sticky="e")
+        self.dg_selectallbtn.grid(row=1,column=0, sticky="e")
         self.ckbtn_filebtn.grid(row=0,column=0,padx=30,sticky="n",pady=self.bpad) 
         
     def layout_imagesizeoptions(self):
@@ -211,13 +215,15 @@ class MainWindow(Frame):
         self.imgqualityslider.grid(row=5,column=0,padx=30,sticky="n")
 
     def layout_imglistbox(self):
+        self.lbl_inputpath = Label(master=self.imgtextframe,text="Input path:")
+        self.lbl_inputpath.grid(row=0,column=0,sticky="w")
         self.imglist = Listbox(master=self.imgtextframe,height = self.ilheight, width=self.ilwidth,selectmode=EXTENDED)
         self.imglistscrollbar = Scrollbar(master=self.imgtextframe, orient=VERTICAL)
         self.imglist.config(yscrollcommand=self.imglistscrollbar.set)
         self.imglistscrollbar.config(command=self.imglist.yview)
-        self.imglistscrollbar.grid(row=1,column=1,sticky="nse")
-        self.imglist.grid(row=1,column=1)
-        self.imglabel = Label(master=self.imgtextframe, text="Images").grid(row=0,column=1,sticky="n") 
+        self.imglistscrollbar.grid(row=2,column=0,sticky="nse")
+        self.imglist.grid(row=2,column=0)
+        self.imglabel = Label(master=self.imgtextframe, text="Images").grid(row=1,column=0,sticky="s") 
 
     def imgselection(self,event):
         self.imglistselections = event.widget.curselection()
