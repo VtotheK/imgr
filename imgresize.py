@@ -78,7 +78,6 @@ class IMGResize(threading.Thread):
                 if(fsplit[-1] == ext.lower()):
                     print(f"{filename} had a file extension in it's name, erasing")
                     filename = (str(time.time()),filename[0:len(filename) - len(fsplit[-1]) - 1])[len(filename) - len(fsplit) > 0]
-                    
                     #filename = filename[0:len(filename) - len(fsplit)]
             print(f"THREAD:{threading.current_thread().ident} -> Resizing:{arg.imgpath}")
             img = img.resize(arg.target_size,PIL.Image.LANCZOS)
