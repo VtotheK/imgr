@@ -4,7 +4,8 @@ from tkinter import *
 
 if(__name__=="__main__"):
     root = Tk()
-    root.geometry("515x495")
+    root.geometry("530x515")
     root.title("MainWindow")
+    root.resizable(False,False)
     imgrsz = mainwindow.MainWindow(root)
     root.mainloop()

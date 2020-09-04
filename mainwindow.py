@@ -45,8 +45,8 @@ class MainWindow(Frame):
         self.selectfolderframe.grid(row=0,column=0,rowspan=2,sticky="nswe")
         self.outputfolderframe.grid(row=2,column=0,rowspan=2,sticky="nswe")
         self.qualityframe.grid(row=4,column=0,rowspan=3,sticky="nwse")
-        self.extensionsframe.grid(row=7,column=0,rowspan=5,sticky="nwse")
-        self.imagesizeoptionsframe.grid(row=12,column=0, rowspan=6,columnspan=16,sticky="nwse")
+        self.extensionsframe.grid(row=7,column=0,rowspan=4,sticky="nwse")
+        self.imagesizeoptionsframe.grid(row=11,column=0, rowspan=6,columnspan=16,sticky="nwse")
         self.quitbtnframe.grid(row=16,column=0)
 
         self.pack(fill=BOTH,expand=1)
@@ -71,23 +71,26 @@ class MainWindow(Frame):
         self.nonimglistscrollbar = Scrollbar(master=self.imgtextframe, orient=VERTICAL)
         self.nonimglist.config(yscrollcommand=self.nonimglistscrollbar.set)
         self.nonimglistscrollbar.config(command=self.nonimglist.yview)
-        self.nonimglistscrollbar.grid(row=5,column=15,sticky="nse")
-        self.nonimglist.grid(row=5,column=0,columnspan=15)
+        self.nonimglistscrollbar.grid(row=6,column=14,sticky="nse")
+        self.nonimglist.grid(row=6,column=0,columnspan=15)
         self.noimglabel = Label(master=self.imgtextframe, text="Not supported files",font="TkDefaultFont 10 bold")
-        self.noimglabel.grid(row=4,column=1)
+        self.noimglabel.grid(row=5,column=1)
 
     def layout_outputfolderselection(self):
-        self.lbl_outputpath = Label(master=self.outputfolderframe, text="Path:")
+        self.lbl_output = Label(master=self.imgtextframe, text="Output:",font="TkDefaultFont 10 bold")
+        self.lbl_outputpath = Label(master=self.imgtextframe)
         self.ckbtn_outputfolder = Button(master=self.outputfolderframe,text="Output folder",command=self.outputfolder)
-        self.ckbtn_outputfolder.grid(row=3,column=0,padx=30)
-        #self.ckbtn_outputfolder.place(relx=0.5,rely=0.25,anchor=CENTER)
-        self.lbl_outputpath.grid(row=4,column=0,sticky="w")
+        #self.ckbtn_outputfolder.grid(row=3,column=0,padx=30)
+        self.ckbtn_outputfolder.place(relx=0.15,rely=0.2)
+        
+        self.lbl_output.grid(row=1,column=0,sticky="w")
+        self.lbl_outputpath.grid(row=1,column=1,sticky="w",columnspan=20)
 
     def layout_fileselection(self):
         self.ckbtn_filebtn      =Button(master=self.selectfolderframe,text="Input folder",command=self.selectfolder)
         self.ckbtn_subfolders   =Checkbutton(master=self.selectfolderframe,text="Subfolders",variable=self.subfoldervar).grid(row=1,column=0)
         self.dg_selectallbtn    =Button(master=self.imgtextframe, text="Select all",command=self.selectallimgs,bg="white")
-        self.dg_selectallbtn.grid(row=1,column=14, sticky="e")
+        self.dg_selectallbtn.grid(row=2,column=14, sticky="e")
         self.ckbtn_filebtn.grid(row=0,column=0,padx=30,sticky="n",pady=self.bpad) 
         
     def layout_imagesizeoptions(self):
@@ -103,8 +106,10 @@ class MainWindow(Frame):
         self.lbl_ratioandor.grid(row=13,column=0,sticky="n",padx=30)
         self.ckbtn_maxheight.grid(row=12,column=0,sticky="w")
         self.ckbtn_maxwidth.grid(row=14,column=0,sticky="w")
-        self.ent_maxheight.grid(row=12,column=1,sticky="s")
-        self.ent_maxwidth.grid(row=14,column=1,sticky="s")
+        #self.ent_maxheight.grid(row=12,column=1,sticky="w")
+        #self.ent_maxwidth.grid(row=14,column=1,sticky="w")
+        self.ent_maxheight.place(relx=0.22,rely=0.26)
+        self.ent_maxwidth.place(relx=0.22,rely=0.52)
         self.ckbtn_preserve_aspectratio.grid(row=11,column=0,sticky="nw",columnspan=2) 
         self.ckbtn_multithreading.grid(row=15,column=0,sticky="nw")
 
@@ -218,15 +223,15 @@ class MainWindow(Frame):
         self.lbl_inputpathlbl = Label(master=self.imgtextframe,text="Input path:",font="TkDefaultFont 10 bold")
         self.lbl_inputpath = Label(master=self.imgtextframe)
         self.lbl_inputpathlbl.grid(row=0,column=0,sticky="w")
-        self.lbl_inputpath.grid(row=0,column=1,sticky="w",columnspan=15)
+        self.lbl_inputpath.grid(row=0,column=1,sticky="w",columnspan=30)
         self.imglist = Listbox(master=self.imgtextframe,height = self.ilheight, width=self.ilwidth,selectmode=EXTENDED)
         self.imglistscrollbar = Scrollbar(master=self.imgtextframe, orient=VERTICAL)
         self.imglist.config(yscrollcommand=self.imglistscrollbar.set)
         self.imglistscrollbar.config(command=self.imglist.yview)
-        self.imglistscrollbar.grid(row=2,column=15,sticky="nse")
-        self.imglist.grid(row=2,column=0,columnspan=15)
+        self.imglistscrollbar.grid(row=3,column=14,sticky="nse")
+        self.imglist.grid(row=3,column=0,columnspan=15)
         self.imglabel = Label(master=self.imgtextframe, text="Images",font="TkDefaultFont 10 bold")
-        self.imglabel.grid(row=1,column=1,sticky="s") 
+        self.imglabel.grid(row=2,column=1,sticky="s") 
 
     def imgselection(self,event):
         self.imglistselections = event.widget.curselection()
@@ -258,15 +263,23 @@ class MainWindow(Frame):
     
     def outputfolder(self):
         self.outputpath = filedialog.askdirectory(initialdir=self.cacheddir)
+        if(self.outputpath and self.outputpath != "" and self.outputpath is not None):
+            p = self.outputpath
+            if(len(p) > 35):
+                p = p[0:32] + "..."
+            self.lbl_outputpath.config(text=p)
 
     def selectfolder(self):
         temppath = filedialog.askdirectory(initialdir=self.cacheddir)
         if(temppath and temppath != ""):
             self.filepath = temppath
             self.cacheddir = self.filepath
+            p = temppath
+            if(len(p) > 35):
+                p = p[0:32] + "..."
+            self.lbl_inputpath.config(text=p)
             if(self.filepath and self.filepath != ""):
                 self.readfiles()
-        self.lbl_inputpath.config(text=self.filepath)
 
     def start_disableoptions(self):
         self.dg_selectallbtn.config(state="disabled")
