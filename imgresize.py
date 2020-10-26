@@ -7,6 +7,15 @@ from tkinter import *
 from PIL import Image
 from collections import deque
 
+imgxtensions = ["jpg","jpeg","gif","tiff","bmp",""]
+
+def trimfilename(filename,ext):
+    fsplit = filename.split(".")
+    if(len(fsplit)>0):
+        if(fsplit[-1] == ext.lower() or fsplit[-1] == "jpg"):
+            print(f"{filename} had a file extension in it's name, erasing")
+            filename = (str(time.time()),filename[0:len(filename) - len(fsplit[-1]) - 1])[len(filename) - len(fsplit) > 0]
+    return filename
 
 class IMGResize(threading.Thread):
     def __init__(self,sender,args,multithreading,indicatorthreshold,processindicators):
@@ -63,7 +72,6 @@ class IMGResize(threading.Thread):
         print(f"Total time: {round(end_time-start_time,2)} seconds")
 
     def resize(self,arg,multithreading):
-
         if(multithreading):
             tid = threading.get_ident()
             self.currentthreads.append(tid)
@@ -71,20 +79,13 @@ class IMGResize(threading.Thread):
         try:
             self.sender.currentlyresizing(arg.imgpath)
             img = Image.open(arg.imgpath) 
-            ext = img.format
-            filename = os.path.basename(arg.imgpath)
-            fsplit = filename.split(".")
-            if(len(fsplit)>0):
-                if(fsplit[-1] == ext.lower()):
-                    print(f"{filename} had a file extension in it's name, erasing")
-                    filename = (str(time.time()),filename[0:len(filename) - len(fsplit[-1]) - 1])[len(filename) - len(fsplit) > 0]
-                    #filename = filename[0:len(filename) - len(fsplit)]
+            filename = trimfilename(os.path.basename(arg.imgpath),img.format)
             print(f"THREAD:{threading.current_thread().ident} -> Resizing:{arg.imgpath}")
             img = img.resize(arg.target_size,PIL.Image.LANCZOS)
             out = arg.outputpath + "/" + filename
             print(f"THREAD:{threading.current_thread().ident} -> Saving: {out}")
             img.save(out,arg.extension)
-        except (OSError,KeyError,ValueError) as e: #TODO too many exceptions, must parse input files more carefully, remove when implemented
+        except (OSError,KeyError,ValueError) as e: 
             print("Could not resize image file, unsupported file type")
         finally:
             self.cresized = self.cresized + 1
@@ -100,3 +101,4 @@ class IMGResize(threading.Thread):
             print(f"THREAD:{threading.current_thread().ident} -> stopping")
             tid = threading.get_ident()
             self.currentthreads.remove(tid)
+

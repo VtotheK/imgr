@@ -2,6 +2,7 @@
 import argprocessor as ip
 import irutil 
 import oututil
+import mainargparser
 from datetime import datetime,date,time
 import errorwindow 
 from tkinter import *
@@ -102,12 +103,11 @@ class MainWindow(Frame):
         self.ent_maxheight                  =Entry(master=self.imagesizeoptionsframe,width=5)
         self.ent_maxwidth                   =Entry(master=self.imagesizeoptionsframe,width=5)
         self.lbl_ratioandor                 =Label(master=self.imagesizeoptionsframe,text="AND")
+        
         self.header.grid(row=10,column=0, sticky="n", columnspan=2)
         self.lbl_ratioandor.grid(row=13,column=0,sticky="n",padx=30)
         self.ckbtn_maxheight.grid(row=12,column=0,sticky="w")
         self.ckbtn_maxwidth.grid(row=14,column=0,sticky="w")
-        #self.ent_maxheight.grid(row=12,column=1,sticky="w")
-        #self.ent_maxwidth.grid(row=14,column=1,sticky="w")
         self.ent_maxheight.place(relx=0.22,rely=0.26)
         self.ent_maxwidth.place(relx=0.22,rely=0.52)
         self.ckbtn_preserve_aspectratio.grid(row=11,column=0,sticky="nw",columnspan=2) 
@@ -120,66 +120,13 @@ class MainWindow(Frame):
             self.lbl_ratioandor["text"] = "AND"
 
     def layout_startconversion(self):
-        self.btn_startconversion = Button(master=self.imagesizeoptionsframe, text="Convert",command=self.startconversion).grid(row=16,column=0,sticky="nw")
+        self.btn_startconversion = Button(master=self.imagesizeoptionsframe, text="Convert",command=self.process).grid(row=16,column=0,sticky="nw")
 
 
     #TODO make errorwindow descriptions     
-    def startconversion(self):
-        if(self.filepath is None or self.filepath == ""):
-            return
-        args = {}
-        today               = date.today()
-        now                 = datetime.now()
-        current_time        = time(now.hour,now.minute,now.second)
-        dirname             = str(datetime.combine(today,current_time))
-        outputpath          = (self.outputpath,self.filepath)[self.outputpath == "" or self.outputpath is None]
-        fcreated, message, outfolder = oututil.createoutputdir(outputpath,dirname)
-        if(not fcreated):
-            print(f"Could not create output folder, reason: {message}")
-            exit()
-        #aspectratio = multithreading = preserve_extensions =  False
-        userextension = None
-        args["maxheight"] = 0
-        args["maxwidth"]  = 0
-        if(not self.filepath):
-            errorwindow.ErrorWindow(root=self.master, title="No destination folder specified")
-            return
-        if(self.imglist.size() < 1):
-            errorwindow.ErrorWindow(root=self.master,title="No images loaded")
-            return
-        elif(len(self.imglistselections) < 1):
-            print(self.imglistselections)
-            errorwindow.ErrorWindow(root=self.master,title="No images selected")
-            return
-        elif(self.val_ckbtn_maxheight.get() == 0 and self.val_ckbtn_maxwidth.get() == 0):
-            errorwindow.ErrorWindow(root=self.master,title="No max height or max width specified")
-            return
-        if(self.val_ckbtn_maxheight.get() == 1):
-            h = self.ent_maxheight.get()
-            if(not irutil.isnumber(h)):
-                errorwindow.ErrorWindow(root=self.master,title="Max height not a number")
-                return
-            args["maxheight"] = int(h)
-        if(self.val_ckbtn_maxwidth.get() == 1 ):
-            w = self.ent_maxwidth.get()
-            if(not irutil.isnumber(w)):
-                errorwindow.ErrorWindow(root=self.master,title="Max width not a number")
-                return
-            args["maxwidth"] = int(w)
-        args["aspectratio"] = (False,True)[self.val_ckbtn_aspectratio.get() == 1]
-        args["preserveextensions"]  = (False,True)[self.cbfileextensions_preserve_val.get() == 1]
-        args["multithreading"]      = (False,True)[self.val_multithreading.get() == 1] 
-        #args["extensions"] = []
-        if(not args["preserveextensions"]):
-            args["userextension"] = self.rbfileextensions_val.get() 
-        else:
-            args["userextension"] = None
-        fullpaths = []
-        for i in self.imglistselections:
-            path = self.filepath + self.imgfilenames[i]
-            fullpaths.append(path)
-        ip.process(self.master,self.filepath,fullpaths,outfolder,args)
-        
+    
+    def process(self):
+        mainargparser.startconversion(self)
 
     def rb_fileextensions(self):
         MODES = [("JPEG","JPEG"),

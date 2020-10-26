@@ -1,6 +1,5 @@
 #!usr/bin/env
 import os
-import magic
 from PIL import Image, ExifTags
 
 def getfiles(path,subfolders=False):

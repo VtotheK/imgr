@@ -38,8 +38,12 @@ def process(root,filepath,imgpaths,outputpath,gui_args):
         #is max height/width defined in GUI?
         if(gui_args["maxheight"] > 0):
             maxheight = (gui_args["maxheight"],target_height)[gui_args["maxheight"]==target_height]
+        else:
+            maxheight = 0
         if(gui_args["maxwidth"] > 0):
             maxwidth = (gui_args["maxwidth"],target_width)[gui_args["maxwidth"]==target_width]
+        else:
+            maxwidth = 0
         
         #is aspectratio defined in GUI
         if(gui_args["aspectratio"]):
