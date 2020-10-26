@@ -77,7 +77,7 @@ class IMGResize(threading.Thread):
             self.currentthreads.append(tid)
             print(f"THREAD:{threading.current_thread().ident} -> starting to work")
         try:
-            self.sender.currentlyresizing(arg.imgpath)
+            self.sender.currentlyresizing(os.path.basename(arg.imgpath))
             img = Image.open(arg.imgpath) 
             filename = trimfilename(os.path.basename(arg.imgpath),img.format)
             print(f"THREAD:{threading.current_thread().ident} -> Resizing:{arg.imgpath}")

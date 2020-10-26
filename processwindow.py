@@ -21,11 +21,9 @@ class ProcessWindow(Frame):
             self.window_layout()
         else:
             self.processwindow= tk.Toplevel(root)
-            #self.processwindow.geometry(str(self.width) + "x" + str(self.height))
             self.processedfiles = 0 
             self.window_layout()
             self.processimages()
-        #self.master.title("Converting images")
 
     def window_layout(self):
         self.processframe = tk.Frame(master=self.processwindow)
@@ -37,13 +35,13 @@ class ProcessWindow(Frame):
         self.label_process.grid(row=1,column=3,columnspan=5)
         self.label_rsztext = Label(master=self.imagetextframe,text="Resizing:")
         self.label_rsztext.grid(row=3,column=0,sticky="w",columnspan=1)
-        self.label_processedimg = Label(master=self.imagetextframe,text="SomeCurrentImage.jpg",font="TkDefaultFont 10 bold",relief=GROOVE,height=1,width=20)
+        self.label_processedimg = Label(master=self.imagetextframe,text="",font="TkDefaultFont 10 bold",relief=GROOVE,height=1,width=30)
         self.label_processedimg.grid(row=3,column=1,sticky="w")
         self.btn_quit = Button(master=self.imagetextframe, text="Cancel",command=self.cancelordone)
         self.btn_quit.grid(row=3,column=7,columnspan=3,sticky="e",pady=5)
         for i in range(10):
-            self.processindicators.append(tk.Canvas(master=self.processframe,border=3,relief=GROOVE,height=25,width=25,bg="red"))
-            self.processindicators[i].grid(row=1,column=i)
+            self.processindicators.append(tk.Canvas(master=self.processframe,border=3,relief=GROOVE,height=25,width=25,bg="grey"))
+            self.processindicators[i].grid(row=1,column=i,pady=5)
     
     def resizedone(self):
         self.processing = False
@@ -78,14 +76,6 @@ class ProcessWindow(Frame):
                 dotcount = 0
             time.sleep(1)
         self.label_process.config(text="Conversion done")
-
-    
-    def threadtest(self,ind,sec):
-        for j in range(len(ind)):
-            time.sleep(sec)
-            ind[j].config(bg="green")
-        self.processing = False
-    
 
 
 if(__name__=="__main__"):

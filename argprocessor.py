@@ -68,15 +68,8 @@ def process(root,filepath,imgpaths,outputpath,gui_args):
         target_height= int(target_height)
         arg.target_size = target_width,target_height
         args.append(arg)
-        """
-        print(f"imagepath{imgpaths[i]}")
-        print(f"originalsize{image.size}")
-        print(f"targetsize :{args.target_size}")
-        print(f"aspectratio:{args.aspectratio}")
-        print(f"extension:{args.extension}\n")
-        """
     process = pw.ProcessWindow(master,args,gui_args["multithreading"],False)
-#LEVEYS = KORKEUS * ASPECTRATIO
+
 def get_targetsize(xy_target,xy_image):
     target = 0;
     if(xy_target > 0 and xy_target<=xy_image):
