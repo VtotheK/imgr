@@ -14,7 +14,7 @@ def trimfilename(filename,ext):
     if(len(fsplit)>0):
         if(fsplit[-1] == ext.lower() or fsplit[-1] == "jpg"):
             print(f"{filename} had a file extension in it's name, erasing")
-            filename = (str(time.time()),filename[0:len(filename) - len(fsplit[-1]) - 1])[len(filename) - len(fsplit) > 0]
+            filename = (str(time.time()),filename[0:len(filename) - len(fsplit[-1]) - 1])[len(filename) - len(fsplit) > 0] #after 6 months of writing this, i have no clue what this line does. Note to self, don't go egotripping when writing code. 
     return filename
 
 class IMGResize(threading.Thread):
@@ -30,7 +30,7 @@ class IMGResize(threading.Thread):
         self.processindicators = processindicators 
 
     def run(self):
-        print(f"THREADS:{threading.activeCount()}")
+        print(f"Active threads:{threading.activeCount()}")
         time.sleep(3)
         self.currentthreads = []
         allthreads = []
@@ -84,7 +84,10 @@ class IMGResize(threading.Thread):
             img = img.resize(arg.target_size,PIL.Image.LANCZOS)
             out = arg.outputpath + "/" + filename
             print(f"THREAD:{threading.current_thread().ident} -> Saving: {out}")
-            img.save(out,arg.extension)
+            #if(arg.extension == 'JPEG'):
+             #   img.save(out,arg.extension,
+            #else:
+             #   img.save(out,arg.extension)
         except (OSError,KeyError,ValueError) as e: 
             print("Could not resize image file, unsupported file type")
         finally:

@@ -53,10 +53,13 @@ def startconversion(arg):
     args["multithreading"]      = (False,True)[arg.val_multithreading.get() == 1] 
     if(not args["preserveextensions"]):
         args["userextension"] = arg.rbfileextensions_val.get() 
+        if(args["userextension"] == 'JPEG'):
+            args["jpegquality"] = arg.val_jpegqualityslider.get()
     else:
         args["userextension"] = None
     fullpaths = []
     for i in arg.imglistselections:
         path = arg.filepath + arg.imgfilenames[i]
         fullpaths.append(path)
+    return
     ip.process(arg.master,arg.filepath,fullpaths,outfolder,args)

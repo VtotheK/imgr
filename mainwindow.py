@@ -33,6 +33,8 @@ class MainWindow(Frame):
         self.val_ckbtn_maxheight            = IntVar()
         self.val_multithreading             = IntVar()
         self.val_ckbtn_maxwidth             = IntVar()
+        self.val_jpegqualityslider          = IntVar()
+        
         self.selectfolderframe      = Frame(master=self,border=1,relief=GROOVE)
         self.outputfolderframe      = Frame(master=self,border=1,relief=GROOVE)
         self.qualityframe           = Frame(master=self,border=1,relief=GROOVE)
@@ -139,23 +141,23 @@ class MainWindow(Frame):
         self.rbextensions = []
         currow=6
         curcol=0
-        x_place = 20
-        y_place = 30
+        x_pos = 20
+        y_pos = 30
         #make buttons for available extensions
         for text,mode in MODES:
             self.rbextensions.append(Radiobutton(master=self.extensionsframe,text=text,variable=self.rbfileextensions_val,value=mode))
         for j in range(len(self.rbextensions)):
             self.rbextensions[j].grid(row=currow,column=curcol,sticky="w")
             if(j%2==0 and j > 0):
-                y_place = y_place + 20
-                x_place = 20
-                self.rbextensions[j].place(x=x_place,y=y_place)
-                x_place = 90
+                y_pos = y_pos + 20
+                x_pos = 20
+                self.rbextensions[j].place(x=x_pos,y=y_pos)
+                x_pos = 90
             elif(j==0):
-                self.rbextensions[j].place(x=x_place,y=y_place)
-                x_place = 90
+                self.rbextensions[j].place(x=x_pos,y=y_pos)
+                x_pos = 90
             else:
-                self.rbextensions[j].place(x=x_place,y=y_place)
+                self.rbextensions[j].place(x=x_pos,y=y_pos)
 
     def cb_fileextensions_preserve(self):
         self.ckbtn_fileextensions = Checkbutton(master=self.extensionsframe, text="Original extensions",variable=self.cbfileextensions_preserve_val,command=self.file_extensionsuseroption)
@@ -163,7 +165,7 @@ class MainWindow(Frame):
 
     def layout_qualityslider(self):
         self.qualityscalelabel = Label(master=self.qualityframe, text="JPEG Quality", font="TkDefaultFont 10 bold").grid(row=3,column=0,sticky="n")
-        self.imgqualityslider = Scale(master=self.qualityframe, from_=0, to_=10,orient=HORIZONTAL)
+        self.imgqualityslider = Scale(master=self.qualityframe, from_=0, to_=10,orient=HORIZONTAL,variable=self.val_jpegqualityslider)
         self.imgqualityslider.grid(row=5,column=0,padx=30,sticky="n")
 
     def layout_imglistbox(self):
