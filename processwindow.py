@@ -28,9 +28,6 @@ class ProcessWindow(Toplevel):
             self.processimages()
 
     def window_layout(self):
-        #icon = Image.open("img/icon")
-        #bticon = ImageTk.PhotoImage(icon)
-        #self.tk.call("wm","iconphoto",self._w,bticon)
         self.processframe = tk.Frame(master=self.processwindow)
         self.processframe.grid(row=0,column=0,columnspan=10,rowspan=2)
         self.imagetextframe = tk.Frame(master=self.processwindow,border=1)
