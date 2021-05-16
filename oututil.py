@@ -1,7 +1,10 @@
 import os
-#TODO untested
+import errorwindow
 
 def createoutputdir(path,dirname):
+    if(not path or path == "" or  not dirname):
+       return False, "No output folder defined!", None
+    print(path, "+",dirname)
     fullpath = path + "/" + dirname
     accessrights = 0o755
     try:

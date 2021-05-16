@@ -16,36 +16,37 @@ def startconversion(arg):
     current_time        = time(now.hour,now.minute,now.second)
     dirname             = str(datetime.combine(today,current_time))
     outputpath          = (arg.outputpath,arg.filepath)[arg.outputpath == "" or arg.outputpath is None]
-    fcreated, message, outfolder = oututil.createoutputdir(outputpath,dirname)
+    fcreated, message, outfolder = oututil.createoutputdir(outputpath.get(),dirname)
     if(not fcreated):
+        errorwindow.ErrorWindow(root=arg.master,description="No output folder defined!")
         print(f"Could not create output folder, reason: {message}")
-        exit()
+        return
     userextension = None
     args["maxheight"] = 0
     args["maxwidth"]  = 0
     if(not arg.filepath):
-        errorwindow.ErrorWindow(root=arg.master, title="No destination folder specified")
+        errorwindow.ErrorWindow(root=arg.master, description="No destination folder specified")
         return
     if(arg.imglist.size() < 1):
-        errorwindow.ErrorWindow(root=arg.master,title="No images loaded")
+        errorwindow.ErrorWindow(root=arg.master,description="No images loaded")
         return
     elif(len(arg.imglistselections) < 1):
         print(arg.imglistselections)
-        errorwindow.ErrorWindow(root=arg.master,title="No images selected")
+        errorwindow.ErrorWindow(root=arg.master,description="No images selected")
         return
     elif(arg.val_ckbtn_maxheight.get() == 0 and arg.val_ckbtn_maxwidth.get() == 0):
-        errorwindow.ErrorWindow(root=arg.master,title="No max height or max width specified")
+        errorwindow.ErrorWindow(root=arg.master,description="No max height or max width specified")
         return
     if(arg.val_ckbtn_maxheight.get() == 1):
         h = arg.ent_maxheight.get()
         if(not irutil.isnumber(h)):
-            errorwindow.ErrorWindow(root=arg.master,title="Max height not a number")
+            errorwindow.ErrorWindow(root=arg.master,description="Max height not a number")
             return
         args["maxheight"] = int(h)
     if(arg.val_ckbtn_maxwidth.get() == 1 ):
         w = arg.ent_maxwidth.get()
         if(not irutil.isnumber(w)):
-            errorwindow.ErrorWindow(root=arg.master,title="Max width not a number")
+            errorwindow.ErrorWindow(root=arg.master,description="Max width not a number")
             return
         args["maxwidth"]            = int(w)
     args["aspectratio"]         = (False,True)[arg.val_ckbtn_aspectratio.get() == 1]

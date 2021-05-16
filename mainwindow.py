@@ -83,7 +83,6 @@ class MainWindow(Frame):
         self.lbl_output = Label(master=self.imgtextframe, text="Output:",font="TkDefaultFont 10 bold")
         self.lbl_outputpath = Label(master=self.imgtextframe)
         self.ckbtn_outputfolder = Button(master=self.outputfolderframe,text="Output folder",command=self.outputfolder)
-        #self.ckbtn_outputfolder.grid(row=3,column=0,padx=30)
         self.ckbtn_outputfolder.place(relx=0.15,rely=0.2)
         
         self.lbl_output.grid(row=1,column=0,sticky="w")
@@ -124,9 +123,6 @@ class MainWindow(Frame):
     def layout_startconversion(self):
         self.btn_startconversion = Button(master=self.imagesizeoptionsframe, text="Convert",command=self.process).grid(row=16,column=0,sticky="nw")
 
-
-    #TODO make errorwindow descriptions     
-    
     def process(self):
         mainargparser.startconversion(self)
 
@@ -167,6 +163,7 @@ class MainWindow(Frame):
         self.qualityscalelabel = Label(master=self.qualityframe, text="JPEG Quality", font="TkDefaultFont 10 bold").grid(row=3,column=0,sticky="n")
         self.imgqualityslider = Scale(master=self.qualityframe, from_=0, to_=100,orient=HORIZONTAL,variable=self.val_jpegqualityslider)
         self.imgqualityslider.grid(row=5,column=0,padx=30,sticky="n")
+        self.imgqualityslider.set(90)
 
     def layout_imglistbox(self):
         self.lbl_inputpathlbl = Label(master=self.imgtextframe,text="Input path:",font="TkDefaultFont 10 bold")
