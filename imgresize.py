@@ -45,10 +45,9 @@ class IMGResize(threading.Thread):
                                 arg = self.args.pop()
                             except IndexError:
                                 print("Tried to pop image from empty arg-queue")
-                                return False #TODO handle this return somehow
+                                return False
                             thread = threading.Thread(target=self.resize, args=(arg,True))
                             thread.start()
-                            #t = _thread.start_new_thread(self.resize,(arg,True,))
                             print("THREAD SPAWNED")
                             allthreads.append(thread)
                         else:
@@ -84,11 +83,18 @@ class IMGResize(threading.Thread):
             img = img.resize(arg.target_size,PIL.Image.LANCZOS)
             out = arg.outputpath + "/" + filename
             print(f"THREAD:{threading.current_thread().ident} -> Saving: {out}")
-            #if(arg.extension == 'JPEG'):
-             #   img.save(out,arg.extension,
-            #else:
-             #   img.save(out,arg.extension)
+            if(arg.extension == 'JPEG'):
+                jpegquality = arg.jpegquality
+                filename = out + "." + str(arg.extension).lower()
+                if(img.mode in("RGBA","P")):
+                    rbg_img = img.convert("RGB")
+                    rbg_img.save(filename,"JPEG",quality=jpegquality)
+                else:
+                    img.save(filename,'JPEG',quality=jpegquality)
+            else:
+                img.save(out + "." +str(arg.extension).lower(),arg.extension)
         except (OSError,KeyError,ValueError) as e: 
+            print(e)
             print("Could not resize image file, unsupported file type")
         finally:
             self.cresized = self.cresized + 1

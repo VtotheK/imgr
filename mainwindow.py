@@ -165,7 +165,7 @@ class MainWindow(Frame):
 
     def layout_qualityslider(self):
         self.qualityscalelabel = Label(master=self.qualityframe, text="JPEG Quality", font="TkDefaultFont 10 bold").grid(row=3,column=0,sticky="n")
-        self.imgqualityslider = Scale(master=self.qualityframe, from_=0, to_=10,orient=HORIZONTAL,variable=self.val_jpegqualityslider)
+        self.imgqualityslider = Scale(master=self.qualityframe, from_=0, to_=100,orient=HORIZONTAL,variable=self.val_jpegqualityslider)
         self.imgqualityslider.grid(row=5,column=0,padx=30,sticky="n")
 
     def layout_imglistbox(self):

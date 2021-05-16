@@ -61,5 +61,4 @@ def startconversion(arg):
     for i in arg.imglistselections:
         path = arg.filepath + arg.imgfilenames[i]
         fullpaths.append(path)
-    return
     ip.process(arg.master,arg.filepath,fullpaths,outfolder,args)
