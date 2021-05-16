@@ -28,6 +28,7 @@ class IMGResize(threading.Thread):
         self.multithreading = multithreading
         self.indicatorthreshold = indicatorthreshold
         self.processindicators = processindicators 
+        self.resized_amount = 0
 
     def run(self):
         print(f"Active threads:{threading.activeCount()}")
@@ -68,7 +69,7 @@ class IMGResize(threading.Thread):
                 self.processindicators.popleft().config(bg="green")
         self.sender.resizedone()
         end_time = time.time()
-        print(f"Total time: {round(end_time-start_time,2)} seconds")
+        print(f"Resized {self.resized_amount} image in {round(end_time-start_time,2)} seconds.")
 
     def resize(self,arg,multithreading):
         if(multithreading):
@@ -94,10 +95,10 @@ class IMGResize(threading.Thread):
             else:
                 img.save(out + "." +str(arg.extension).lower(),arg.extension)
         except (OSError,KeyError,ValueError) as e: 
-            print(e)
             print("Could not resize image file, unsupported file type")
         finally:
             self.cresized = self.cresized + 1
+            self.resized_amount = self.resized_amount + 1
             if(self.cresized > self.indicatorthreshold):
                 try:
                     ind = self.processindicators.popleft()

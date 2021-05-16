@@ -184,7 +184,6 @@ class MainWindow(Frame):
 
     def imgselection(self,event):
         self.imglistselections = event.widget.curselection()
-        print(self.imglistselections)
 
     def selectallimgs(self):
         self.imglist.select_set(0,END)

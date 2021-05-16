@@ -7,10 +7,12 @@ import argprocessor
 import threading
 from tkinter import * 
 from collections import deque
+from PIL import Image,ImageTk
 
-class ProcessWindow(Frame):
+class ProcessWindow(Toplevel):
     def __init__(self,root,args,multithreading=False,debug=False):
        #TODO REMOVE THIS PART
+        self.callingparent = root
         self.multithreading = multithreading
         self.processing = False
         self.args = args
@@ -26,6 +28,9 @@ class ProcessWindow(Frame):
             self.processimages()
 
     def window_layout(self):
+        #icon = Image.open("img/icon")
+        #bticon = ImageTk.PhotoImage(icon)
+        #self.tk.call("wm","iconphoto",self._w,bticon)
         self.processframe = tk.Frame(master=self.processwindow)
         self.processframe.grid(row=0,column=0,columnspan=10,rowspan=2)
         self.imagetextframe = tk.Frame(master=self.processwindow,border=1)
@@ -45,6 +50,7 @@ class ProcessWindow(Frame):
     
     def resizedone(self):
         self.processing = False
+        self.label_processedimg.config(text="Done!")
     
     def currentlyresizing(self,path):
         self.label_processedimg.config(text=path)
