@@ -28,7 +28,7 @@ class MainWindow(Frame):
         self.cbfileextensions_preserve_val  = IntVar()
         self.rbfileextensions_val           = StringVar()
         self.subfoldervar                   = IntVar() 
-        self.filepath                       = StringVar()
+        self.filepath                       = None
         self.val_ckbtn_aspectratio          = IntVar()
         self.val_ckbtn_maxheight            = IntVar()
         self.val_multithreading             = IntVar()

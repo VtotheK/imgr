@@ -16,7 +16,7 @@ def startconversion(arg):
     current_time        = time(now.hour,now.minute,now.second)
     dirname             = str(datetime.combine(today,current_time))
     outputpath          = (arg.outputpath,arg.filepath)[arg.outputpath == "" or arg.outputpath is None]
-    fcreated, message, outfolder = oututil.createoutputdir(outputpath.get(),dirname)
+    fcreated, message, outfolder = oututil.createoutputdir(outputpath,dirname)
     if(not fcreated):
         errorwindow.ErrorWindow(root=arg.master,description="No output folder defined!")
         print(f"Could not create output folder, reason: {message}")

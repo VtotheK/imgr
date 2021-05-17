@@ -3,6 +3,8 @@ import os
 from PIL import Image, ExifTags
 
 def getfiles(path,subfolders=False):
+    imagefilesread = 0
+    nonimagefilesread = 0
     if(path==None):
         return
     FORMATS = ["JPEG","PNG","BMP","GIF","TIFF","PPM"]
@@ -14,15 +16,17 @@ def getfiles(path,subfolders=False):
             for name in files:
                 try:
                     fname = os.path.join(root,name)
-                    print(f"reading:{fname}")
                     img = Image.open(fname)
                     if (any(img.format == f for f in FORMATS)):
+                        imagefilesread += 1
                         filespath.append(imgpathstr(fname,path,img))
                     else:
                         nonimagelist.append(imgpathstr(fname,path,img))
+                        nonimagefilesread += 1
                 except (IOError,ValueError,RuntimeError) as e:
                     fname = fname.replace(path,'')
                     nonimagelist.append(fname)
+                    nonimagefilesread += 1
     else:
         try:
             for item in os.listdir(path):
@@ -32,11 +36,14 @@ def getfiles(path,subfolders=False):
                             img = Image.open(fname)
                             if(img):
                                 filespath.append(imgpathstr(fname,path,img))
+                                imagefilesread += 1
                         except (IOError,ValueError) as e:
                             fname = fname.replace(path,'')
                             nonimagelist.append(fname)
+                            nonimagefilesread += 1
         except FileNotFoundError:
             filespath.append("Folder not found")
+    print(f"Images found: {imagefilesread} \nNon-image files found: {nonimagefilesread}")
     return filespath,nonimagelist
 
 
