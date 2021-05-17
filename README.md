@@ -3,7 +3,7 @@
 
 This project was started in mind to learn about Python and Tkinter in general. Looking back at this project, the code is pretty awful and unmaintainable.
 
-###Main take aways:
+### Main take aways:
 * GUI programming is not my slice cup of teacake. I am horrible at it
 * Don't go egotripping in the future with your code, use variable declarations that make sense
 * Don't go egotripping in the future with your code, if/elsing away is way better than absolutely nightmare inducing ternary abominations
