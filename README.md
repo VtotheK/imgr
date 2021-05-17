@@ -1,5 +1,5 @@
 # imgr
-##A bulk image resizer with Tkinter GUI
+##  A bulk image resizer with Tkinter GUI
 
 This project was started in mind to learn about Python and Tkinter in general. Looking back at this project, the code is pretty awful and unmaintainable.
 
