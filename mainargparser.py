@@ -9,6 +9,7 @@ from tkinter import filedialog
 
 def startconversion(arg):
     if(arg.filepath is None or arg.filepath == ""):
+        errorwindow.ErrorWindow(root=arg.master,description="No input folder path defined!")
         return
     args = {}
     today               = date.today()
