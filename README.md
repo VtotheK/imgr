@@ -14,6 +14,7 @@ test4.jpg: PNG image data, 920 x 736, 4-bit colormap, non-interlaced
 Let's select the `~/inputfolder` as our input folder from the UI, and select `~/outputfolder` as the output folder where to put the resized images. Let's also select that we choose to keep the original file extensions and we want to limit the image height to 250 px while preserving aspectratio. Let's also choose all images from the input folder for resizising. 
 
 Like so:
+
 ![imgr-test-image-1](docs/img/imgr-test-images-1.png)
 
 Then click Convert and check the results from `~/outputfolder`. imgr will always create a folder where it stores the resized files, the folders name is always the system time of the resizing.
