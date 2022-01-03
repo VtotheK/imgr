@@ -7,7 +7,7 @@ Lets resize a few images of different filetype. Our test images are located in `
 vtothek@ubuntu ~/inputfolder $ file *
 test1.png: RIFF (little-endian) data, Web/P image, VP8 encoding, 390x280, Scaling: [none]x[none], YUV color, decoders should clamp
 test2.png: PNG image data, 800 x 600, 8-bit/color RGBA, non-interlaced
-test3.jpg: JPEG image data, Exif standard: [TIFF image data, big-endian, direntries=11, manufacturer=NIKON CORPORATION, model=NIKON D300, orientation=upper-left, xresolution=9236, yresolution=9244, resolutionunit=2, software=Bibble 4.10.1, datetime=2009:05:24 16:32:41, copyright=                                                      , GPS-Data], baseline, precision 8, 4304x2860, components 3
+test3.jpg: JPEG image data, Exif standard: [TIFF image data, big-endian, direntries=11, manufacturer=NIKON CORPORATION, model=NIKON D300, orientation=upper-left, xresolution=9236, yresolution=9244, resolutionunit=2, software=Bibble 4.10.1, datetime=2009:05:24 16:32:41, copyright=, GPS-Data], baseline, precision 8, 4304x2860, components 3
 test4.jpg: PNG image data, 920 x 736, 4-bit colormap, non-interlaced
 ```
 
