@@ -35,6 +35,3 @@ This project was started in mind to learn about Python and Tkinter in general. L
 
 ### Main take aways:
 * Python threading is a complete joke. Concurrent image resizing? How about 50% performance decline in return.
-
-The program works and does what it is supposed to do (and is pretty fast too), but i have no interest in upkeeping this mess. Fork and refactor the living out of this if you wish. Or just use it to resize your images.
-
