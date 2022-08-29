@@ -28,10 +28,3 @@ test4.png:  PNG image data, 312 x 250, 4-bit colormap, non-interlaced
 ```
 
 And so we have resized images. 
-
-
-## About this project
-This project was started in mind to learn about Python and Tkinter in general. Looking back at this project, the code is pretty awful and unmaintainable.
-
-### Main take aways:
-* Python threading is a complete joke. Concurrent image resizing? How about 50% performance decline in return.
